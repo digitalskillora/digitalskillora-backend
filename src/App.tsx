@@ -13,11 +13,27 @@ import Integrations from './pages/Integrations';
 import Curriculum from './pages/Curriculum';
 import Credentials from './pages/Credentials';
 import Settings from './pages/Settings';
+import AuthScreen from './pages/AuthScreen';
+
+// Firebase Imports
+import { auth, onAuthStateChanged } from './firebase';
 
 export default function App() {
   const [currentTab, setCurrentTab] = useState<NavItemKey>('overview');
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+
+  // Firebase auth state
+  const [user, setUser] = useState<any>(null);
+  const [authLoading, setAuthLoading] = useState(true);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      setAuthLoading(false);
+    });
+    return () => unsubscribe();
+  }, []);
 
   // Automatically restore scroll coordinates to the top when switching pages
   useEffect(() => {
@@ -77,6 +93,19 @@ export default function App() {
     }
   };
 
+  if (authLoading) {
+    return (
+      <div className="h-screen w-screen bg-brand-green flex flex-col items-center justify-center space-y-4">
+        <div className="h-10 w-10 border-4 border-brand-primary border-t-transparent rounded-full animate-spin" />
+        <span className="text-xs font-mono font-bold text-white tracking-widest uppercase animate-pulse">Initializing Secure Handshake...</span>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <AuthScreen onAuthSuccess={(u) => setUser(u)} />;
+  }
+
   return (
     <div id="skillora-root-container" className="h-screen bg-brand-off-white flex text-brand-text-dark font-sans selection:bg-brand-primary-light selection:text-brand-primary-dark antialiased overflow-hidden">
       {/* Sidebar Navigation */}
@@ -90,6 +119,7 @@ export default function App() {
           onMenuClick={() => setSidebarOpen(true)} 
           onSearch={(term) => setSearchQuery(term)} 
           onNavigate={setCurrentTab}
+          user={user}
         />
 
         {/* Dynamic Route Container Box */}

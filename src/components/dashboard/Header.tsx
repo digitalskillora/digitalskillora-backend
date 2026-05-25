@@ -12,14 +12,17 @@ import {
   Menu
 } from 'lucide-react';
 
+import { auth, signOut } from '../../firebase';
+
 interface HeaderProps {
   title: string;
   onSearch?: (term: string) => void;
   onMenuClick?: () => void;
-  onNavigate?: (tab: 'overview' | 'learning-engine' | 'skill-mapping' | 'analytics' | 'infrastructure' | 'integrations' | 'settings') => void;
+  onNavigate?: (tab: 'overview' | 'learning-engine' | 'skill-mapping' | 'analytics' | 'infrastructure' | 'integrations' | 'curriculum' | 'credentials' | 'settings') => void;
+  user?: any;
 }
 
-export default function Header({ title, onSearch, onMenuClick, onNavigate }: HeaderProps) {
+export default function Header({ title, onSearch, onMenuClick, onNavigate, user }: HeaderProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
@@ -162,23 +165,31 @@ export default function Header({ title, onSearch, onMenuClick, onNavigate }: Hea
           <button
             id="profile-dropdown-btn"
             onClick={() => setShowProfileMenu(!showProfileMenu)}
-            className="flex items-center space-x-3 p-1.5 pr-3 rounded-xl border border-brand-border bg-brand-off-white hover:border-brand-text-muted transition-all duration-150 cursor-pointer"
+            className="flex items-center space-x-3 p-1.5 pr-3 rounded-xl border border-brand-border bg-brand-off-white hover:border-brand-text-muted transition-all duration-150 cursor-pointer animate-fade-in"
           >
-            <div className="h-8 w-8 rounded-lg bg-brand-green flex items-center justify-center font-bold text-sm text-brand-primary shadow shadow-brand-green/30">
-              TM
+            <div className="h-8 w-8 rounded-lg bg-brand-green flex items-center justify-center font-bold text-sm text-brand-primary shadow shadow-brand-green/30 overflow-hidden shrink-0">
+              {user?.photoURL ? (
+                <img src={user.photoURL} alt="Avatar" className="h-full w-full object-cover" />
+              ) : (
+                user?.displayName ? user.displayName.substring(0, 2).toUpperCase() : (user?.email ? user.email.substring(0, 2).toUpperCase() : 'US')
+              )}
             </div>
             <div className="text-left max-sm:hidden">
-              <span className="text-xs font-bold text-brand-text-dark block leading-none">T. Maxwell</span>
-              <span className="text-[10px] font-mono text-brand-nvidia block leading-none mt-1">Global HR Admin</span>
+              <span className="text-xs font-bold text-brand-text-dark block leading-none truncate max-w-[100px]">
+                {user?.displayName || (user?.email ? user.email.split('@')[0] : 'T. Maxwell')}
+              </span>
+              <span className="text-[9px] font-mono text-brand-nvidia block leading-none mt-1 truncate max-w-[100px]">
+                {user?.email ? 'Global Admin' : 'Global HR Admin'}
+              </span>
             </div>
-            <ChevronDown className="h-3 w-3 text-brand-text-muted" />
+            <ChevronDown className="h-3 w-3 text-brand-text-muted shrink-0" />
           </button>
 
           {showProfileMenu && (
             <div id="profile-dropdown-menu" className="absolute right-0 mt-3 w-56 bg-white border border-brand-border shadow-xl rounded-2xl p-2.5 z-50 text-xs">
               <div className="px-3 py-2 border-b border-brand-border mb-1.5">
-                <p className="font-bold text-brand-text-dark text-[11px] uppercase tracking-wider font-mono">Organization</p>
-                <p className="text-xs text-brand-text-body mt-0.5 font-semibold">Stark Enterprises Int.</p>
+                <p className="font-bold text-brand-text-dark text-[9px] uppercase tracking-wider font-mono">Authorized Profile</p>
+                <p className="text-[11px] text-brand-text-body mt-0.5 font-semibold truncate">{user?.email || 'Stark Corporate Profile'}</p>
               </div>
               
               <button 
@@ -196,7 +207,13 @@ export default function Header({ title, onSearch, onMenuClick, onNavigate }: Hea
 
               <div className="border-t border-brand-border my-1.5"></div>
 
-              <button className="w-full flex items-center space-x-2 px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-all duration-150 text-left font-medium">
+              <button 
+                onClick={async () => {
+                  setShowProfileMenu(false);
+                  await signOut(auth);
+                }}
+                className="w-full flex items-center space-x-2 px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-all duration-150 text-left font-medium cursor-pointer"
+              >
                 <LogOut className="h-3.5 w-3.5" />
                 <span>Lock Session</span>
               </button>
