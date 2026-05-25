@@ -29,9 +29,42 @@
 }
 
 @layer base {
+  html, body {
+    overflow-x: hidden;
+    overscroll-behavior-x: none;
+  }
   body {
     background-color: var(--color-brand-off-white);
     color: var(--color-brand-text-dark);
     font-family: var(--font-sans);
+  }
+
+  /* Custom Premium Scrollbars */
+  ::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgba(26, 92, 63, 0.25);
+    border-radius: 10px;
+    transition: background 0.2s ease-in-out;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(26, 92, 63, 0.5);
+  }
+
+  /* Custom Sidebar Nav scrollbar matching its dark green background */
+  #sidebar-nav::-webkit-scrollbar-thumb {
+    background: rgba(245, 166, 35, 0.2);
+  }
+
+  #sidebar-nav::-webkit-scrollbar-thumb:hover {
+    background: rgba(245, 166, 35, 0.45);
   }
 }

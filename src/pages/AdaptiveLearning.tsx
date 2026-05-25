@@ -12,7 +12,9 @@ import {
   Gauge, 
   AlertCircle,
   TrendingUp,
-  Workflow
+  Workflow,
+  Activity,
+  Award
 } from 'lucide-react';
 import { 
   departmentOptions, 
@@ -20,7 +22,7 @@ import {
   getRecommendationForRole 
 } from '../data/learningData';
 
-export default function AdaptiveLearning() {
+export default function AdaptiveLearning({ searchQuery = '' }: { searchQuery?: string }) {
   const [selectedDept, setSelectedDept] = useState('Engineering');
   const [selectedRole, setSelectedRole] = useState('Senior AI/ML Engineer');
   const [selectedSkill, setSelectedSkill] = useState('');
@@ -29,12 +31,22 @@ export default function AdaptiveLearning() {
   const [currentStatusIndex, setCurrentStatusIndex] = useState(0);
   const [activeTab, setActiveTab] = useState<'flow' | 'modules'>('flow');
 
+  // Live Sandbox Workspace Activation State
+  const [isInitializing, setIsInitializing] = useState(false);
+  const [isTrackingStarted, setIsTrackingStarted] = useState(false);
+
   // Trigger evaluation path state
   const [currentPathData, setCurrentPathData] = useState(
     getRecommendationForRole('Senior AI/ML Engineer', 'Engineering')
   );
 
   const roles = rolesByDepartment[selectedDept] || [];
+
+  // Reset live tracking active indicators when division/role shifts
+  useEffect(() => {
+    setIsTrackingStarted(false);
+    setIsInitializing(false);
+  }, [selectedDept, selectedRole]);
 
   // Sync role dropdown when department changes
   useEffect(() => {
@@ -199,7 +211,7 @@ export default function AdaptiveLearning() {
         <section id="adaptive-results" className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           
           {/* Main Visual flow panel: Simulated React Flow - lg:span-8 */}
-          <div className="lg:col-span-8 bg-white border border-brand-border rounded-2xl p-6 shadow-sm flex flex-col justify-between">
+          <div className="lg:col-span-8 bg-white border border-brand-border rounded-2xl p-6 shadow-sm flex flex-col">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-brand-border/60 pb-4 mb-6 gap-3">
               <div>
                 <h3 className="text-xs font-mono font-bold uppercase text-brand-text-dark tracking-wider flex items-center">
@@ -232,7 +244,7 @@ export default function AdaptiveLearning() {
 
             {activeTab === 'flow' ? (
               /* Simulated React Flow diagram utilizing high-quality SVGs */
-              <div className="relative border border-brand-border rounded-xl bg-brand-off-white/40 p-6 flex flex-col items-center justify-center min-h-[380px] overflow-hidden">
+              <div className="relative border border-brand-border rounded-xl bg-brand-off-white/40 p-6 pb-20 flex flex-col items-center justify-center min-h-[520px] overflow-hidden">
                 {/* SVG connection lines overlay */}
                 <svg className="absolute inset-0 w-full h-full pointer-events-none z-0" xmlns="http://www.w3.org/2000/svg">
                   {/* Line from node1 to node2 */}
@@ -244,7 +256,7 @@ export default function AdaptiveLearning() {
                   <polygon points="518,250 512,246 512,254" fill="#E5E7EB" />
                 </svg>
 
-                <div className="relative w-full z-10 grid grid-cols-1 md:grid-cols-3 gap-8 p-4">
+                <div className="relative w-full z-10 grid grid-cols-1 md:grid-cols-3 gap-8 p-4 items-start">
                   {/* Node 1: Skill Analysis (Completed) */}
                   <div className="bg-white border-2 border-brand-green-mid rounded-xl p-4 shadow-sm hover:ring-2 hover:ring-brand-green-mid/20 transition-all">
                     <div className="flex items-center justify-between mb-2">
@@ -253,26 +265,80 @@ export default function AdaptiveLearning() {
                     </div>
                     <h4 className="text-xs font-bold text-brand-text-dark">User Skill Audit</h4>
                     <p className="text-[10px] text-brand-text-body mt-1">{activeRecommendation?.learningFlow[0]?.description || 'Gaps identified.'}</p>
-                    <div className="mt-3 pt-2 border-t border-brand-border/65 flex items-center justify-between text-[10px] font-mono text-brand-green-mid">
-                      <span>Ref Score: 82.4%</span>
-                      <span>Verified ✓</span>
+                    <div className="mt-3 pt-2 border-t border-brand-border/65 flex flex-col gap-1 text-[10px] font-mono text-brand-green-mid">
+                      <div className="flex justify-between">
+                        <span className="text-brand-text-muted">Ref Score:</span>
+                        <span className="font-bold">82.4%</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-brand-text-muted">Status:</span>
+                        <span className="font-bold">Verified ✓</span>
+                      </div>
+                    </div>
+
+                    {/* Audit Metrics Sub-card to fill vertical space */}
+                    <div className="mt-4 bg-brand-off-white/60 border border-brand-border/50 rounded-lg p-2.5 space-y-2 text-[10px] transition-all hover:bg-brand-off-white">
+                      <div className="font-mono font-bold text-brand-text-dark uppercase tracking-wider text-[8px] flex items-center">
+                        <Activity className="h-3 w-3 mr-1 text-brand-green" />
+                        Audit Performance
+                      </div>
+                      <div className="grid grid-cols-2 gap-2 font-mono">
+                        <div>
+                          <span className="text-brand-text-muted block text-[8px] uppercase leading-none">Rate</span>
+                          <span className="text-brand-green font-bold text-[10px] mt-0.5 block">100%</span>
+                        </div>
+                        <div>
+                          <span className="text-brand-text-muted block text-[8px] uppercase leading-none">Prereqs</span>
+                          <span className="text-brand-green font-bold text-[10px] mt-0.5 block">Fully Met</span>
+                        </div>
+                      </div>
+                      <div className="w-full bg-brand-border/70 h-1 rounded-full overflow-hidden mt-1">
+                        <div className="bg-brand-green h-full rounded-full" style={{ width: '100%' }} />
+                      </div>
                     </div>
                   </div>
-
+ 
                   {/* Node 2: AI Engine (Completed) */}
-                  <div className="bg-white border-2 border-brand-primary rounded-xl p-4 shadow-sm hover:ring-2 hover:ring-brand-primary/20 transition-all md:translate-y-20">
+                  <div className="bg-white border-2 border-brand-primary rounded-xl p-4 shadow-sm hover:ring-2 hover:ring-brand-primary/20 transition-all md:translate-y-10">
                     <div className="flex items-center justify-between mb-2">
                       <span className="px-2 py-0.5 bg-brand-primary-light text-brand-primary-dark font-bold font-mono text-[9px] rounded uppercase">Active System</span>
                       <span className="text-[9px] font-mono text-brand-text-muted">Node ID: 04B</span>
                     </div>
                     <h4 className="text-xs font-bold text-brand-text-dark">AI Matching Engine</h4>
                     <p className="text-[10px] text-brand-text-body mt-1">{activeRecommendation?.learningFlow[1]?.description || 'Dynamic syllabus mapping.'}</p>
-                    <div className="mt-3 pt-2 border-t border-brand-border/65 flex items-center justify-between text-[10px] font-mono text-brand-primary-dark">
-                      <span>98% Confidence</span>
-                      <span>Resolved ✓</span>
+                    <div className="mt-3 pt-2 border-t border-brand-border/65 flex flex-col gap-1 text-[10px] font-mono text-brand-primary-dark">
+                      <div className="flex justify-between">
+                        <span className="text-brand-text-muted">Confidence:</span>
+                        <span className="font-bold">98%</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-brand-text-muted">Status:</span>
+                        <span className="font-bold">Resolved ✓</span>
+                      </div>
+                    </div>
+
+                    {/* Engine Efficiency Sub-card to fill vertical space */}
+                    <div className="mt-4 bg-brand-off-white/60 border border-brand-border/50 rounded-lg p-2.5 space-y-2 text-[10px] transition-all hover:bg-brand-off-white">
+                      <div className="font-mono font-bold text-brand-text-dark uppercase tracking-wider text-[8px] flex items-center">
+                        <Award className="h-3 w-3 mr-1 text-brand-primary" />
+                        Optimization Matrix
+                      </div>
+                      <div className="grid grid-cols-2 gap-2 font-mono">
+                        <div>
+                          <span className="text-brand-text-muted block text-[8px] uppercase leading-none">Format</span>
+                          <span className="text-brand-primary font-bold text-[10px] mt-0.5 block leading-tight">FP16 / INT8</span>
+                        </div>
+                        <div>
+                          <span className="text-brand-text-muted block text-[8px] uppercase leading-none">Latency</span>
+                          <span className="text-brand-primary font-bold text-[10px] mt-0.5 block leading-tight">&lt; 1.2ms</span>
+                        </div>
+                      </div>
+                      <div className="w-full bg-brand-border/70 h-1 rounded-full overflow-hidden mt-1">
+                        <div className="bg-brand-primary h-full rounded-full animate-pulse" style={{ width: '98%' }} />
+                      </div>
                     </div>
                   </div>
-
+ 
                   {/* Node 3 & 4 stacking vertical */}
                   <div className="space-y-4">
                     {/* Node 3: Active Course Module */}
@@ -283,14 +349,20 @@ export default function AdaptiveLearning() {
                       </div>
                       <h4 className="text-xs font-bold text-brand-text-dark">{activeRecommendation?.learningFlow[2]?.label || 'Active Lab'}</h4>
                       <p className="text-[10px] text-brand-text-body mt-1">{activeRecommendation?.learningFlow[2]?.description || 'Interactive execution.'}</p>
-                      <div className="mt-3 pt-2 border-t border-brand-border/65 flex items-center justify-between text-[10px] font-mono text-brand-text-muted">
-                        <span>Duration: {activeRecommendation?.learningFlow[2]?.duration || '6 hrs'}</span>
-                        <span className="flex items-center text-brand-primary">
-                          <Clock className="h-3 w-3 mr-1" /> Run Lab
-                        </span>
+                      <div className="mt-3 pt-2 border-t border-brand-border/65 flex flex-col gap-1 text-[10px] font-mono text-brand-text-muted">
+                        <div className="flex justify-between">
+                          <span>Duration:</span>
+                          <span className="font-bold">{activeRecommendation?.learningFlow[2]?.duration || '6 hrs'}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span>Workspace:</span>
+                          <span className="flex items-center text-brand-primary font-bold hover:underline cursor-pointer">
+                            <Clock className="h-3 w-3 mr-1" /> Run Lab
+                          </span>
+                        </div>
                       </div>
                     </div>
-
+ 
                     {/* Node 4: Future Tracking */}
                     <div className="bg-white border border-brand-border/60 rounded-xl p-4 shadow-sm opacity-60">
                       <div className="flex items-center justify-between mb-2">
@@ -380,13 +452,34 @@ export default function AdaptiveLearning() {
                   </div>
                 </div>
 
-                <button 
-                  onClick={() => alert(`Starting pathway: ${activeRecommendation?.title}`)}
-                  className="w-full mt-4 py-3 bg-brand-green text-white hover:bg-brand-green-mid hover:underline text-xs font-bold rounded-xl transition-all flex items-center justify-center space-x-1 shadow-sm"
-                >
-                  <Play className="h-3.5 w-3.5 fill-current text-white" />
-                  <span>Start Live Learning Track</span>
-                </button>
+                {isTrackingStarted ? (
+                  <div className="w-full mt-4 p-3 bg-brand-green-light border border-brand-green-border/20 text-brand-green-mid text-[11px] font-bold rounded-xl flex items-center justify-center space-x-2 animate-pulse select-none">
+                    <CheckCircle className="h-4 w-4 text-brand-green-mid" />
+                    <span>Live Learning Sandbox Session Activated!</span>
+                  </div>
+                ) : isInitializing ? (
+                  <button 
+                    disabled
+                    className="w-full mt-4 py-3 bg-brand-green/70 text-white text-[11px] font-bold rounded-xl flex items-center justify-center space-x-2 cursor-not-allowed select-none"
+                  >
+                    <RefreshCcw className="h-3.5 w-3.5 animate-spin text-brand-primary" />
+                    <span>Allocating CUDA Sandbox Workspace...</span>
+                  </button>
+                ) : (
+                  <button 
+                    onClick={() => {
+                      setIsInitializing(true);
+                      setTimeout(() => {
+                        setIsInitializing(false);
+                        setIsTrackingStarted(true);
+                      }, 1500);
+                    }}
+                    className="w-full mt-4 py-3 bg-brand-green text-white hover:bg-brand-green-mid hover:scale-[1.01] active:scale-[0.99] text-xs font-bold rounded-xl transition-all flex items-center justify-center space-x-1 shadow-sm cursor-pointer select-none"
+                  >
+                    <Play className="h-3.5 w-3.5 fill-current text-white" />
+                    <span>Start Live Learning Track</span>
+                  </button>
+                )}
               </div>
             </div>
 

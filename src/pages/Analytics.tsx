@@ -19,14 +19,15 @@ import {
 } from '../data/analyticsData';
 import { LearningVelocityChart } from '../components/charts/CustomCharts';
 
-export default function Analytics() {
+export default function Analytics({ searchQuery = '' }: { searchQuery?: string }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedDeptFilter, setSelectedDeptFilter] = useState('All');
 
   // Filter leaderboard
   const filteredLeaderboard = leaderboardData.filter(item => {
-    const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          item.role.toLowerCase().includes(searchTerm.toLowerCase());
+    const activeSearch = searchTerm || searchQuery;
+    const matchesSearch = item.name.toLowerCase().includes(activeSearch.toLowerCase()) || 
+                          item.role.toLowerCase().includes(activeSearch.toLowerCase());
     const matchesDept = selectedDeptFilter === 'All' || item.department === selectedDeptFilter;
     return matchesSearch && matchesDept;
   });

@@ -23,10 +23,22 @@ import {
 } from '../data/dashboardData';
 import { GrowthLineChart, DepartmentBarChart } from '../components/charts/CustomCharts';
 
-export default function Overview({ setTab }: { setTab: (tab: any) => void }) {
+export default function Overview({ setTab, searchQuery = '' }: { setTab: (tab: any) => void; searchQuery?: string }) {
   const [health, setHealth] = useState(systemHealthMetrics);
   const [activities, setActivities] = useState(recentActivities);
   const [recommendations, setRecommendations] = useState(aiRecommendations);
+
+  const filteredRecommendations = recommendations.filter(rec => 
+    rec.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    rec.category.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    rec.description.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const filteredActivities = activities.filter(act => 
+    act.employeeName.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    act.action.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    act.department.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   // Simulate a live hardware pulse on the command center metrics
   useEffect(() => {
@@ -127,9 +139,9 @@ export default function Overview({ setTab }: { setTab: (tab: any) => void }) {
               <span className="text-[10px] font-mono text-brand-primary-dark font-bold bg-brand-primary-light px-2 py-0.5 rounded-full animate-pulse">{recommendations.length} Pending Actions</span>
             </div>
 
-            {recommendations.length > 0 ? (
+            {filteredRecommendations.length > 0 ? (
               <div className="space-y-4">
-                {recommendations.map((rec) => (
+                {filteredRecommendations.map((rec) => (
                   <div key={rec.id} className="p-4 rounded-xl border border-brand-border bg-brand-off-white hover:border-brand-primary transition-all duration-200 flex flex-col md:flex-row md:items-center justify-between gap-4 group">
                     <div className="space-y-1.5 max-w-xl">
                       <div className="flex items-center space-x-2">
@@ -152,10 +164,10 @@ export default function Overview({ setTab }: { setTab: (tab: any) => void }) {
                       </span>
                     </div>
 
-                    <div className="flex items-center justify-end">
+                    <div className="flex items-center justify-end shrink-0">
                       <button
                         onClick={() => handleTriggerReconciliation(rec.id)}
-                        className="px-3.5 py-2 bg-brand-green text-white hover:bg-brand-green-mid text-[11px] font-bold rounded-lg transition-all duration-150 flex items-center space-x-1.5 shadow"
+                        className="px-3.5 py-2 bg-brand-green text-white hover:bg-brand-green-mid text-[11px] font-bold rounded-lg transition-all duration-150 flex items-center space-x-1.5 shadow whitespace-nowrap shrink-0"
                       >
                         <Play className="h-3 w-3 fill-current text-brand-primary" />
                         <span>Deploy Solution</span>
@@ -187,7 +199,8 @@ export default function Overview({ setTab }: { setTab: (tab: any) => void }) {
             </div>
 
             <div className="divide-y divide-brand-border/60">
-              {activities.map((act) => (
+              {filteredActivities.length > 0 ? (
+                filteredActivities.map((act) => (
                 <div key={act.id} className="py-3.5 flex items-center justify-between hover:bg-brand-off-white/50 -mx-6 px-6 transition-colors">
                   <div className="flex items-center space-x-3.5">
                     {/* Fake avatar */}
@@ -223,7 +236,10 @@ export default function Overview({ setTab }: { setTab: (tab: any) => void }) {
                     </span>
                   </div>
                 </div>
-              ))}
+                ))
+              ) : (
+                <p className="text-xs text-brand-text-muted p-4 text-center">No matching activities found.</p>
+              )}
             </div>
           </div>
         </div>

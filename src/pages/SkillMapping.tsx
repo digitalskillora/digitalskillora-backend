@@ -11,7 +11,8 @@ import {
   Users,
   Eye,
   Activity,
-  Award
+  Award,
+  RefreshCcw
 } from 'lucide-react';
 import { 
   skillMapRadarData, 
@@ -20,9 +21,55 @@ import {
 } from '../data/analyticsData';
 import { SkillsRadarChart } from '../components/charts/CustomCharts';
 
-export default function SkillMapping() {
+export default function SkillMapping({ searchQuery = '' }: { searchQuery?: string }) {
   const [activeDepartmentFilter, setActiveDepartmentFilter] = useState('All');
   const [selectedGap, setSelectedGap] = useState<any>(null);
+
+  // Dynamic Gap Alignment state machine variables
+  const [isAligning, setIsAligning] = useState(false);
+  const [alignmentSuccess, setAlignmentSuccess] = useState(false);
+  const [alignmentSteps, setAlignmentSteps] = useState<string[]>([]);
+  const [currentStepIndex, setCurrentStepIndex] = useState(0);
+
+  // Sync alignment state triggers when selection changes
+  React.useEffect(() => {
+    setIsAligning(false);
+    setAlignmentSuccess(false);
+    setCurrentStepIndex(0);
+  }, [selectedGap]);
+
+  // Stepper sequence animation for database synchronization
+  React.useEffect(() => {
+    if (isAligning) {
+      if (currentStepIndex < alignmentSteps.length) {
+        const timer = setTimeout(() => {
+          setCurrentStepIndex(prev => prev + 1);
+        }, 600);
+        return () => clearTimeout(timer);
+      } else {
+        setIsAligning(false);
+        setAlignmentSuccess(true);
+      }
+    }
+  }, [isAligning, currentStepIndex]);
+
+  const startGapAlignment = () => {
+    setIsAligning(true);
+    setAlignmentSuccess(false);
+    setCurrentStepIndex(0);
+    const steps = [
+      'Scanning employee skill profiles in operations & tech teams...',
+      'Compiling NVIDIA Accelerator baseline syllabus options...',
+      'Mapping pathway requirements to Workday employee records...',
+      'Synchronizing enterprise learning database logs...'
+    ];
+    setAlignmentSteps(steps);
+  };
+
+  const filteredGaps = skillGapList.filter(gap => 
+    gap.skillName.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    gap.category.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   // Filter skills or gaps based on departments
   const gapSeverityColors = {
@@ -43,23 +90,54 @@ export default function SkillMapping() {
     <div id="skill-mapping-page" className="space-y-8 animate-fade-in">
       
       {/* Skill Mapping Header */}
-      <section id="mapping-intro" className="bg-white border border-brand-border rounded-2xl p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div className="space-y-1.5 max-w-2xl">
-          <span className="px-2.5 py-1 text-[9px] font-bold font-mono rounded-full bg-brand-green text-brand-primary uppercase tracking-wider">SKILLS INTELLIGENCE HUB</span>
-          <h3 className="text-sm font-bold text-brand-text-dark uppercase tracking-wider font-mono">Workforce Competency Mapping Centre</h3>
-          <p className="text-xs text-brand-text-body">Inspect structural resource scores across core intelligence groups. Drill down to configure customized, rapid role alignments.</p>
+      <section id="mapping-intro" className="bg-white border-l-4 border-l-brand-green-mid border-y border-r border-brand-border rounded-2xl p-6 shadow-[0_4px_20px_-4px_rgba(26,92,63,0.06)] hover:shadow-[0_6px_24px_-4px_rgba(26,92,63,0.09)] transition-all duration-300 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+        <div className="space-y-2 max-w-2xl">
+          <div className="flex items-center space-x-2">
+            <span className="inline-flex items-center px-2.5 py-1 text-[9px] font-black font-mono rounded-full bg-brand-green-light text-brand-green-border border border-brand-green-border/20 uppercase tracking-wider">
+              <Sparkles className="h-3 w-3 mr-1 animate-pulse" />
+              SKILLS INTELLIGENCE HUB
+            </span>
+          </div>
+          <h3 className="text-base font-black text-brand-text-dark uppercase tracking-wider font-mono">
+            Workforce Competency Mapping Centre
+          </h3>
+          <p className="text-xs text-brand-text-body leading-relaxed">
+            Inspect structural resource scores across core intelligence groups. Drill down to configure customized, rapid role alignments.
+          </p>
         </div>
 
         {/* Selection quick highlights */}
-        <div className="flex space-x-4">
-          <div className="px-4 py-3 bg-brand-off-white border border-brand-border rounded-xl">
-            <span className="text-[10px] text-brand-text-muted font-bold font-mono uppercase block">Active Gaps Detected</span>
-            <span className="text-lg font-black font-mono text-red-600 mt-1 block">5 Critical</span>
+        <div className="flex flex-col sm:flex-row gap-4 shrink-0">
+          {/* Active Gaps Scorecard */}
+          <div className="group relative px-5 py-4 bg-white border-l-4 border-l-red-500 border-y border-r border-brand-border rounded-xl shadow-sm hover:shadow-[0_8px_30px_rgba(239,68,68,0.06)] hover:scale-[1.02] transition-all duration-300 flex items-center justify-between min-w-[200px] overflow-hidden">
+            {/* Ambient Background Accent */}
+            <div className="absolute right-0 bottom-0 w-24 h-24 bg-red-500/5 rounded-full blur-xl group-hover:scale-125 transition-transform duration-500" />
+            <div className="relative z-10 space-y-1">
+              <span className="text-[10px] text-brand-text-muted font-black font-mono uppercase tracking-wider block">Active Gaps Detected</span>
+              <div className="flex items-baseline space-x-1.5">
+                <span className="text-xl font-black font-mono text-red-600">5</span>
+                <span className="text-xs font-bold text-red-500 uppercase tracking-wider">Critical</span>
+              </div>
+            </div>
+            <div className="p-2 bg-red-50 rounded-lg group-hover:bg-red-100 transition-colors duration-300 z-10 ml-4">
+              <AlertTriangle className="h-5 w-5 text-red-500 animate-pulse" />
+            </div>
           </div>
 
-          <div className="px-4 py-3 bg-brand-off-white border border-brand-border rounded-xl">
-            <span className="text-[10px] text-brand-text-muted font-bold font-mono uppercase block">Total Skill Nodes</span>
-            <span className="text-lg font-black font-mono text-brand-green-mid mt-1 block">182 Active</span>
+          {/* Total Skill Nodes Scorecard */}
+          <div className="group relative px-5 py-4 bg-white border-l-4 border-l-brand-green-mid border-y border-r border-brand-border rounded-xl shadow-sm hover:shadow-[0_8px_30px_rgba(26,92,63,0.06)] hover:scale-[1.02] transition-all duration-300 flex items-center justify-between min-w-[200px] overflow-hidden">
+            {/* Ambient Background Accent */}
+            <div className="absolute right-0 bottom-0 w-24 h-24 bg-brand-green-mid/5 rounded-full blur-xl group-hover:scale-125 transition-transform duration-500" />
+            <div className="relative z-10 space-y-1">
+              <span className="text-[10px] text-brand-text-muted font-black font-mono tracking-wider uppercase block">Total Skill Nodes</span>
+              <div className="flex items-baseline space-x-1.5">
+                <span className="text-xl font-black font-mono text-brand-green-mid">182</span>
+                <span className="text-xs font-bold text-brand-green-border uppercase tracking-wider">Active</span>
+              </div>
+            </div>
+            <div className="p-2 bg-brand-green-light rounded-lg group-hover:bg-brand-green/20 transition-colors duration-300 z-10 ml-4">
+              <GitBranch className="h-5 w-5 text-brand-green-border" />
+            </div>
           </div>
         </div>
       </section>
@@ -144,11 +222,11 @@ export default function SkillMapping() {
             </table>
           </div>
 
-          <div className="mt-4 flex items-center justify-between text-[11px] font-mono text-brand-text-muted">
+          <div className="mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-[11px] font-mono text-brand-text-muted">
             <span>Heat indicators derived from final Workday certificates audits.</span>
-            <div className="flex space-x-3">
-              <span className="flex items-center"><span className="w-2.5 h-2.5 rounded bg-brand-green mr-1" /> &gt;85% High</span>
-              <span className="flex items-center"><span className="w-2.5 h-2.5 rounded bg-brand-primary-light mr-1" /> &lt;70% Area to Optimize</span>
+            <div className="flex flex-wrap items-center gap-3.5 shrink-0">
+              <span className="flex items-center whitespace-nowrap"><span className="w-2.5 h-2.5 rounded bg-brand-green mr-1.5 shrink-0" /> &gt;85% High</span>
+              <span className="flex items-center whitespace-nowrap"><span className="w-2.5 h-2.5 rounded bg-brand-primary-light mr-1.5 shrink-0" /> &lt;70% Area to Optimize</span>
             </div>
           </div>
         </div>
@@ -166,8 +244,9 @@ export default function SkillMapping() {
           </div>
 
           <div className="space-y-3.5">
-            {skillGapList.map((gap) => (
-              <div 
+            {filteredGaps.length > 0 ? (
+              filteredGaps.map((gap) => (
+                <div 
                 key={gap.skillName} 
                 onClick={() => setSelectedGap(gap)}
                 className={`p-4 rounded-xl border transition-all duration-200 cursor-pointer flex items-center justify-between gap-4 select-none ${
@@ -200,8 +279,11 @@ export default function SkillMapping() {
                   <ChevronRight className="h-4 w-4 text-brand-text-muted" />
                 </div>
               </div>
-            ))}
-          </div>
+            ))
+          ) : (
+            <p className="text-xs text-brand-text-muted p-4 text-center">No matching skill gaps found.</p>
+          )}
+        </div>
         </div>
 
         {/* Role alignment system box - lg:span-5 */}
@@ -213,48 +295,122 @@ export default function SkillMapping() {
             </div>
             
             {selectedGap ? (
-              <div className="space-y-4">
-                <div className="bg-brand-off-white p-4 rounded-xl border border-brand-border space-y-3">
-                  <span className="text-[10px] font-mono text-brand-text-muted uppercase font-bold">Active Selection parameters</span>
-                  <div className="space-y-1">
-                    <h4 className="text-xs font-black text-brand-text-dark">{selectedGap.skillName}</h4>
-                    <p className="text-[11px] text-brand-text-body">Optimization pipeline index target. Platform impact rating is substantial.</p>
+              isAligning ? (
+                /* Dynamic Interactive Aligning Console Terminal */
+                <div className="bg-brand-text-dark text-brand-white border border-brand-primary rounded-2xl p-5 space-y-4 font-mono text-[10px] shadow-lg animate-pulse">
+                  <div className="flex items-center justify-between pb-2.5 border-b border-white/10">
+                    <span className="text-[9px] font-bold text-brand-primary tracking-wider uppercase flex items-center">
+                      <RefreshCcw className="h-3 w-3 mr-1 animate-spin" />
+                      Deploying Alignment Sync
+                    </span>
+                    <span className="text-[9px] opacity-60">Step {currentStepIndex + 1}/{alignmentSteps.length}</span>
                   </div>
-                  <div className="h-1 bg-brand-border rounded-full overflow-hidden">
-                    <div className="h-full bg-brand-primary" style={{ width: `${selectedGap.impactPercentage}%` }} />
+                  <div className="space-y-2 py-2 text-left">
+                    {alignmentSteps.map((st, idx) => {
+                      const isDone = idx < currentStepIndex;
+                      const isCurrent = idx === currentStepIndex;
+                      return (
+                        <div key={idx} className={`flex items-start space-x-2 transition-opacity duration-200 ${
+                          isDone ? 'opacity-50' : isCurrent ? 'opacity-100 font-bold text-brand-primary' : 'opacity-25'
+                        }`}>
+                          <span>{isDone ? '✓' : isCurrent ? '►' : '•'}</span>
+                          <p className="leading-tight">{st}</p>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <div className="h-1 bg-white/10 rounded-full overflow-hidden">
+                    <div 
+                      className="h-full bg-brand-primary transition-all duration-300"
+                      style={{ width: `${(currentStepIndex / alignmentSteps.length) * 100}%` }}
+                    />
                   </div>
                 </div>
-
-                <div className="space-y-2 text-xs">
-                  <div className="flex justify-between py-1.5 border-b border-brand-border/60">
-                    <span className="text-brand-text-muted font-semibold">Active Deficit Ratio</span>
-                    <span className="font-bold text-red-600 font-mono">{(selectedGap.countNeeded - selectedGap.activeLearners).toLocaleString()} specialists</span>
+              ) : alignmentSuccess ? (
+                /* Alignment Success Metrics Scorecard */
+                <div className="space-y-4 animate-fade-in">
+                  <div className="bg-brand-green-light border border-brand-green-border/20 rounded-xl p-4 text-center space-y-2.5 shadow-sm">
+                    <div className="mx-auto h-8 w-8 rounded-full bg-brand-green text-brand-primary flex items-center justify-center shadow-inner">
+                      <Award className="h-4.5 w-4.5 text-brand-primary" />
+                    </div>
+                    <div>
+                      <h4 className="text-xs font-black text-brand-green-mid">Alignment Successful!</h4>
+                      <p className="text-[10px] text-brand-text-body mt-1 leading-relaxed">
+                        Competency baseline is fully synchronized across system targets.
+                      </p>
+                    </div>
                   </div>
 
-                  <div className="flex justify-between py-1.5 border-b border-brand-border/60">
-                    <span className="text-brand-text-muted font-semibold">System Impact Rating</span>
-                    <span className="font-bold text-brand-green-mid font-mono">{selectedGap.impactPercentage}% Acceleration</span>
+                  <div className="bg-brand-off-white/80 border border-brand-border rounded-xl p-3.5 space-y-2 text-[10px] font-mono shadow-inner">
+                    <span className="text-[9px] text-brand-text-muted uppercase font-bold tracking-wider block">Deployed Telemetry Matrix</span>
+                    <div className="space-y-1.5 text-brand-text-body">
+                      <div className="flex justify-between">
+                        <span>Resolved Deficit:</span>
+                        <span className="font-bold text-brand-green-mid truncate max-w-[120px]" title={selectedGap.skillName}>{selectedGap.skillName}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Pushed Syllabus:</span>
+                        <span className="font-bold text-brand-green-mid">NVIDIA Accelerator v2</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Target Cohort:</span>
+                        <span className="font-bold text-brand-green-mid">{(selectedGap.countNeeded - selectedGap.activeLearners).toLocaleString()} Members</span>
+                      </div>
+                    </div>
                   </div>
+
+                  <button 
+                    onClick={() => setAlignmentSuccess(false)}
+                    className="w-full py-2.5 bg-brand-off-white hover:bg-brand-border border border-brand-border text-brand-text-dark text-[10px] font-bold rounded-xl transition-all shadow-sm cursor-pointer"
+                  >
+                    Close & Manage Gaps
+                  </button>
                 </div>
-
-                <div className="p-3.5 bg-brand-primary-light/55 border border-brand-primary/20 rounded-xl">
-                  <div className="flex items-center space-x-2 text-brand-primary-dark font-sans font-bold text-xs mb-1">
-                    <Sparkles className="h-4 w-4" />
-                    <span>AI Suggested Alignment</span>
+              ) : (
+                /* Default Parameters Panel */
+                <div className="space-y-4">
+                  <div className="bg-brand-off-white p-4 rounded-xl border border-brand-border space-y-3">
+                    <span className="text-[10px] font-mono text-brand-text-muted uppercase font-bold">Active Selection parameters</span>
+                    <div className="space-y-1">
+                      <h4 className="text-xs font-black text-brand-text-dark">{selectedGap.skillName}</h4>
+                      <p className="text-[11px] text-brand-text-body">Optimization pipeline index target. Platform impact rating is substantial.</p>
+                    </div>
+                    <div className="h-1 bg-brand-border rounded-full overflow-hidden">
+                      <div className="h-full bg-brand-primary" style={{ width: `${selectedGap.impactPercentage}%` }} />
+                    </div>
                   </div>
-                  <p className="text-[11px] text-brand-text-body font-medium leading-relaxed">
-                    Automatically trigger and push "NVIDIA Accelerator Courses v2" module as a baseline training route for operations and tech partners.
-                  </p>
-                </div>
 
-                <button 
-                  onClick={() => alert(`Synchronized alignment for: ${selectedGap.skillName}`)}
-                  className="w-full mt-2 py-2.5 bg-brand-green text-white hover:bg-brand-green-mid hover:underline text-xs font-bold rounded-xl transition-all flex items-center justify-center space-x-1 shadow-sm"
-                >
-                  <Award className="h-4 w-4 text-brand-primary" />
-                  <span>Execute Gap Alignment</span>
-                </button>
-              </div>
+                  <div className="space-y-2 text-xs">
+                    <div className="flex justify-between py-1.5 border-b border-brand-border/60">
+                      <span className="text-brand-text-muted font-semibold">Active Deficit Ratio</span>
+                      <span className="font-bold text-red-600 font-mono">{(selectedGap.countNeeded - selectedGap.activeLearners).toLocaleString()} specialists</span>
+                    </div>
+
+                    <div className="flex justify-between py-1.5 border-b border-brand-border/60">
+                      <span className="text-brand-text-muted font-semibold">System Impact Rating</span>
+                      <span className="font-bold text-brand-green-mid font-mono">{selectedGap.impactPercentage}% Acceleration</span>
+                    </div>
+                  </div>
+
+                  <div className="p-3.5 bg-brand-primary-light/55 border border-brand-primary/20 rounded-xl">
+                    <div className="flex items-center space-x-2 text-brand-primary-dark font-sans font-bold text-xs mb-1">
+                      <Sparkles className="h-4 w-4" />
+                      <span>AI Suggested Alignment</span>
+                    </div>
+                    <p className="text-[11px] text-brand-text-body font-medium leading-relaxed">
+                      Automatically trigger and push "NVIDIA Accelerator Courses v2" module as a baseline training route for operations and tech partners.
+                    </p>
+                  </div>
+
+                  <button 
+                    onClick={startGapAlignment}
+                    className="w-full mt-2 py-2.5 bg-brand-green text-white hover:bg-brand-green-mid hover:underline text-xs font-bold rounded-xl transition-all flex items-center justify-center space-x-1 shadow-sm cursor-pointer"
+                  >
+                    <Award className="h-4 w-4 text-brand-primary" />
+                    <span>Execute Gap Alignment</span>
+                  </button>
+                </div>
+              )
             ) : (
               <div className="p-8 text-center border-2 border-dashed border-brand-border rounded-2xl bg-brand-off-white/40 my-auto h-full flex flex-col items-center justify-center min-h-[220px]">
                 <GitBranch className="h-8 w-8 text-brand-primary mb-2 animate-bounce" />

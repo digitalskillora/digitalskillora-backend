@@ -15,7 +15,7 @@ import {
   HardDrive
 } from 'lucide-react';
 
-export default function Infrastructure() {
+export default function Infrastructure({ searchQuery = '' }: { searchQuery?: string }) {
   const [logs, setLogs] = useState<string[]>([
     "[03:26:01] INBOUND: Workday employee-sync handshake authorized.",
     "[03:26:10] MODEL_INF: Gemini fine-tune engine loaded on Cluster Node 2.",

@@ -46,44 +46,44 @@ export function GrowthLineChart({ data }: GrowthLineProps) {
     <ResponsiveContainer width="100%" height={280}>
       <LineChart data={data} margin={{ top: 15, right: 15, left: -10, bottom: 5 }}>
         <CartesianGrid strokeDasharray="3 3" stroke="#F1F3F5" vertical={false} />
-        <XAxis 
-          dataKey="time" 
-          stroke="#9CA3AF" 
-          fontSize={10} 
-          tickLine={false} 
-          axisLine={false} 
+        <XAxis
+          dataKey="time"
+          stroke="#9CA3AF"
+          fontSize={10}
+          tickLine={false}
+          axisLine={false}
           dy={10}
         />
-        <YAxis 
-          stroke="#9CA3AF" 
-          fontSize={10} 
-          tickLine={false} 
-          axisLine={false} 
+        <YAxis
+          stroke="#9CA3AF"
+          fontSize={10}
+          tickLine={false}
+          axisLine={false}
           dx={-5}
         />
         <Tooltip content={<CustomChartTooltip />} />
-        <Legend 
-          iconType="circle" 
-          iconSize={8} 
+        <Legend
+          iconType="circle"
+          iconSize={8}
           wrapperStyle={{ fontSize: '11px', paddingTop: '15px' }}
         />
-        <Line 
-          type="monotone" 
-          dataKey="activeLearners" 
-          name="Active Learners" 
-          stroke="#0D3B2A" 
-          strokeWidth={3} 
-          activeDot={{ r: 6 }} 
-          dot={{ r: 3, strokeWidth: 1 }} 
+        <Line
+          type="monotone"
+          dataKey="activeLearners"
+          name="Active Learners"
+          stroke="#0D3B2A"
+          strokeWidth={3}
+          activeDot={{ r: 6 }}
+          dot={{ r: 3, strokeWidth: 1 }}
         />
-        <Line 
-          type="monotone" 
-          dataKey="modulesCompleted" 
-          name="Modules Completed" 
-          stroke="#F5A623" 
-          strokeWidth={3} 
-          activeDot={{ r: 6 }} 
-          dot={{ r: 3, strokeWidth: 1 }} 
+        <Line
+          type="monotone"
+          dataKey="modulesCompleted"
+          name="Modules Completed"
+          stroke="#F5A623"
+          strokeWidth={3}
+          activeDot={{ r: 6 }}
+          dot={{ r: 3, strokeWidth: 1 }}
         />
       </LineChart>
     </ResponsiveContainer>
@@ -99,40 +99,40 @@ export function DepartmentBarChart({ data }: DepartmentBarProps) {
     <ResponsiveContainer width="100%" height={280}>
       <BarChart data={data} margin={{ top: 15, right: 15, left: -10, bottom: 5 }}>
         <CartesianGrid strokeDasharray="3 3" stroke="#F1F3F5" vertical={false} />
-        <XAxis 
-          dataKey="name" 
-          stroke="#9CA3AF" 
-          fontSize={10} 
-          tickLine={false} 
-          axisLine={false} 
+        <XAxis
+          dataKey="name"
+          stroke="#9CA3AF"
+          fontSize={10}
+          tickLine={false}
+          axisLine={false}
           dy={10}
         />
-        <YAxis 
-          stroke="#9CA3AF" 
-          fontSize={10} 
-          tickLine={false} 
+        <YAxis
+          stroke="#9CA3AF"
+          fontSize={10}
+          tickLine={false}
           axisLine={false}
           dx={-5}
         />
         <Tooltip content={<CustomChartTooltip />} />
-        <Legend 
-          iconType="rect" 
-          iconSize={10} 
+        <Legend
+          iconType="rect"
+          iconSize={10}
           wrapperStyle={{ fontSize: '11px', paddingTop: '15px' }}
         />
-        <Bar 
-          dataKey="readinessScore" 
-          name="Readiness Index (%)" 
-          fill="#0D3B2A" 
-          radius={[4, 4, 0, 0]} 
-          maxBarSize={30} 
+        <Bar
+          dataKey="readinessScore"
+          name="Readiness Index (%)"
+          fill="#0D3B2A"
+          radius={[4, 4, 0, 0]}
+          maxBarSize={30}
         />
-        <Bar 
-          dataKey="averageProgress" 
-          name="Average Path Completion %" 
-          fill="#76B900" 
-          radius={[4, 4, 0, 0]} 
-          maxBarSize={30} 
+        <Bar
+          dataKey="averageProgress"
+          name="Average Path Completion %"
+          fill="#76B900"
+          radius={[4, 4, 0, 0]}
+          maxBarSize={30}
         />
       </BarChart>
     </ResponsiveContainer>
@@ -150,30 +150,30 @@ export function SkillsRadarChart({ data }: SkillsRadarProps) {
         <PolarGrid stroke="#E5E7EB" />
         <PolarAngleAxis dataKey="subject" stroke="#4B5563" fontSize={10} />
         <PolarRadiusAxis angle={30} domain={[0, 100]} stroke="#9CA3AF" fontSize={9} />
-        <Radar 
-          name="Company Average Score" 
-          dataKey="departmentScore" 
-          stroke="#0D3B2A" 
-          fill="#0D3B2A" 
-          fillOpacity={0.25} 
+        <Radar
+          name="Company Average Score"
+          dataKey="departmentScore"
+          stroke="#0D3B2A"
+          fill="#0D3B2A"
+          fillOpacity={0.25}
         />
-        <Radar 
-          name="Target Enterprise Benchmark" 
-          dataKey="targetBenchmark" 
-          stroke="#F5A623" 
-          fill="#F5A623" 
-          fillOpacity={0.15} 
+        <Radar
+          name="Target Enterprise Benchmark"
+          dataKey="targetBenchmark"
+          stroke="#F5A623"
+          fill="#F5A623"
+          fillOpacity={0.15}
         />
-        <Radar 
-          name="SaaS Industry Average" 
-          dataKey="industryAverage" 
-          stroke="#76B900" 
-          fill="#76B900" 
-          fillOpacity={0.05} 
+        <Radar
+          name="SaaS Industry Average"
+          dataKey="industryAverage"
+          stroke="#76B900"
+          fill="#76B900"
+          fillOpacity={0.05}
         />
-        <Legend 
-          iconType="circle" 
-          iconSize={8} 
+        <Legend
+          iconType="circle"
+          iconSize={8}
           wrapperStyle={{ fontSize: '11px', paddingTop: '10px' }}
         />
         <Tooltip content={<CustomChartTooltip />} />
@@ -188,25 +188,25 @@ export function LearningVelocityChart({ data }: { data: any[] }) {
     <ResponsiveContainer width="100%" height={280}>
       <LineChart data={data} margin={{ top: 15, right: 15, left: -10, bottom: 5 }}>
         <CartesianGrid strokeDasharray="3 3" stroke="#F1F3F5" vertical={false} />
-        <XAxis 
-          dataKey="month" 
-          stroke="#9CA3AF" 
-          fontSize={10} 
-          tickLine={false} 
-          axisLine={false} 
+        <XAxis
+          dataKey="month"
+          stroke="#9CA3AF"
+          fontSize={10}
+          tickLine={false}
+          axisLine={false}
           dy={10}
         />
-        <YAxis 
-          stroke="#9CA3AF" 
-          fontSize={10} 
-          tickLine={false} 
+        <YAxis
+          stroke="#9CA3AF"
+          fontSize={10}
+          tickLine={false}
           axisLine={false}
           dx={-5}
         />
         <Tooltip content={<CustomChartTooltip />} />
-        <Legend 
-          iconType="circle" 
-          iconSize={8} 
+        <Legend
+          iconType="circle"
+          iconSize={8}
           wrapperStyle={{ fontSize: '11px', paddingTop: '15px' }}
         />
         <Line type="monotone" dataKey="engineeringVelocity" name="Engineering" stroke="#0D3B2A" strokeWidth={2.5} dot={{ r: 3 }} />

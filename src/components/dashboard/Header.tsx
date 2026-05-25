@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { 
   Search, 
   Bell, 
@@ -8,15 +8,18 @@ import {
   ChevronDown,
   LogOut,
   Sliders,
-  CalendarDays
+  CalendarDays,
+  Menu
 } from 'lucide-react';
 
 interface HeaderProps {
   title: string;
   onSearch?: (term: string) => void;
+  onMenuClick?: () => void;
+  onNavigate?: (tab: 'overview' | 'learning-engine' | 'skill-mapping' | 'analytics' | 'infrastructure' | 'integrations' | 'settings') => void;
 }
 
-export default function Header({ title, onSearch }: HeaderProps) {
+export default function Header({ title, onSearch, onMenuClick, onNavigate }: HeaderProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
@@ -25,6 +28,37 @@ export default function Header({ title, onSearch }: HeaderProps) {
     { id: 2, text: "Critial skill gap alert: Multi-MIG GPU configurations required.", isNew: true, time: "2 hrs ago" },
     { id: 3, text: "Integration sync with Workday completed (14,282 profiles parsed).", isNew: false, time: "24 mins ago" }
   ]);
+
+  const notificationRef = useRef<HTMLDivElement>(null);
+  const profileRef = useRef<HTMLDivElement>(null);
+  const [syncTime, setSyncTime] = useState('');
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (notificationRef.current && !notificationRef.current.contains(event.target as Node)) {
+        setShowNotifications(false);
+      }
+      if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
+        setShowProfileMenu(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  useEffect(() => {
+    const updateTime = () => {
+      const now = new Date();
+      const dateStr = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+      setSyncTime(`${dateStr} ${timeStr}`);
+    };
+    updateTime();
+    const timer = setInterval(updateTime, 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
@@ -41,14 +75,23 @@ export default function Header({ title, onSearch }: HeaderProps) {
   const newCount = notifications.filter(n => n.isNew).length;
 
   return (
-    <header id="main-header" className="h-20 border-b border-brand-border bg-white sticky top-0 px-8 z-20 flex items-center justify-between">
+    <header id="main-header" className="min-h-[80px] py-4 md:py-5 border-b border-brand-border bg-white sticky top-0 px-4 md:px-8 z-20 flex items-center justify-between">
       {/* Left side description */}
-      <div className="flex items-center space-x-4">
+      <div className="flex items-center space-x-3.5">
+        {onMenuClick && (
+          <button
+            id="mobile-sidebar-toggle"
+            onClick={onMenuClick}
+            className="p-2 -ml-2 rounded-xl text-brand-text-body hover:bg-brand-off-white lg:hidden transition-colors cursor-pointer"
+            aria-label="Toggle Navigation Sidebar"
+          >
+            <Menu className="h-5 w-5" />
+          </button>
+        )}
         <div>
-          <h1 id="header-page-title" className="text-xl font-bold tracking-tight text-brand-text-dark">{title}</h1>
-          <p className="text-[11px] font-mono text-brand-text-muted flex items-center mt-0.5">
-            <CalendarDays className="h-3.5 w-3.5 mr-1 text-brand-primary" />
-            Platform Active • Last sync: <span className="font-semibold text-brand-green-mid ml-1">May 25, 2026 03:26 UTC</span>
+          <h1 id="header-page-title" className="text-base md:text-xl font-bold tracking-tight text-brand-text-dark">{title}</h1>
+          <p className="text-[10px] md:text-[11px] font-mono text-brand-text-muted flex items-center mt-0.5">
+            System Time: <span className="font-semibold text-brand-green-mid ml-1">{syncTime || 'Initializing...'}</span>
           </p>
         </div>
       </div>
@@ -71,7 +114,7 @@ export default function Header({ title, onSearch }: HeaderProps) {
         </div>
 
         {/* Notification bell panel */}
-        <div className="relative">
+        <div className="relative" ref={notificationRef}>
           <button
             id="notification-bell-btn"
             onClick={() => setShowNotifications(!showNotifications)}
@@ -115,7 +158,7 @@ export default function Header({ title, onSearch }: HeaderProps) {
         </div>
 
         {/* Profile Avatar Widget */}
-        <div className="relative">
+        <div className="relative" ref={profileRef}>
           <button
             id="profile-dropdown-btn"
             onClick={() => setShowProfileMenu(!showProfileMenu)}
@@ -138,14 +181,17 @@ export default function Header({ title, onSearch }: HeaderProps) {
                 <p className="text-xs text-brand-text-body mt-0.5 font-semibold">Stark Enterprises Int.</p>
               </div>
               
-              <button className="w-full flex items-center space-x-2 px-3 py-2 text-brand-text-body hover:bg-brand-off-white hover:text-brand-text-dark rounded-lg transition-all duration-150">
+              <button 
+                onClick={() => {
+                  if (onNavigate) {
+                    onNavigate('settings');
+                  }
+                  setShowProfileMenu(false);
+                }}
+                className="w-full flex items-center space-x-2 px-3 py-2 text-brand-text-body hover:bg-brand-off-white hover:text-brand-text-dark rounded-lg transition-all duration-150 cursor-pointer"
+              >
                 <Sliders className="h-3.5 w-3.5 text-brand-primary" />
                 <span>Control Panel</span>
-              </button>
-
-              <button className="w-full flex items-center space-x-2 px-3 py-2 text-brand-text-body hover:bg-brand-off-white hover:text-brand-text-dark rounded-lg transition-all duration-150">
-                <SearchCode className="h-3.5 w-3.5 text-brand-nvidia" />
-                <span>Auditing Console</span>
               </button>
 
               <div className="border-t border-brand-border my-1.5"></div>

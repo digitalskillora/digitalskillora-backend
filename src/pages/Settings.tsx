@@ -17,10 +17,20 @@ import {
 
 type SettingsTab = 'organization' | 'users' | 'permissions' | 'subscription' | 'security';
 
-export default function Settings() {
+export default function Settings({ searchQuery = '' }: { searchQuery?: string }) {
   const [activeTab, setActiveTab] = useState<SettingsTab>('organization');
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
+
+  // Custom Toast State
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'info' } | null>(null);
+
+  const showToast = (message: string, type: 'success' | 'info' = 'success') => {
+    setToast({ message, type });
+    setTimeout(() => {
+      setToast(null);
+    }, 3000);
+  };
 
   // Form states
   const [orgForm, setOrgForm] = useState({
@@ -110,7 +120,7 @@ export default function Settings() {
             }`}
           >
             <ShieldCheck className={`h-4.5 w-4.5 ${activeTab === 'permissions' ? 'text-brand-primary' : 'text-brand-text-muted'}`} />
-            <span>Role Permissions Matrix</span>
+            <span>Role Permissions</span>
           </button>
 
           <button
@@ -257,7 +267,6 @@ export default function Settings() {
                       <th className="px-5 py-3 text-left">Corporate Function</th>
                       <th className="px-5 py-3 text-left">Platform Scope</th>
                       <th className="px-5 py-3 text-center">SSO Synced</th>
-                      <th className="px-5 py-3 text-right">Action</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-brand-border bg-white font-medium">
@@ -285,15 +294,6 @@ export default function Settings() {
                             {u.ssoSynced ? 'ACTIVE' : 'FAILED'}
                           </span>
                         </td>
-
-                        <td className="px-5 py-3.5 whitespace-nowrap text-right text-brand-text-muted">
-                          <button 
-                            onClick={() => alert(`Reviewing platform access for user: ${u.name}`)}
-                            className="text-brand-green-mid hover:underline font-bold text-xs"
-                          >
-                            Edit View
-                          </button>
-                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -303,8 +303,8 @@ export default function Settings() {
               <div className="p-4 bg-brand-off-white border border-brand-border rounded-xl flex justify-between items-center text-xs">
                 <p className="text-brand-text-body">Total active platform directory profiles synchronized: <strong>14,282 users</strong>.</p>
                 <button 
-                  onClick={() => alert('Forcing directory refresh...')}
-                  className="px-3.5 py-1.5 border border-brand-border rounded-lg bg-white text-[11px] font-bold text-brand-text-dark hover:bg-brand-off-white"
+                  onClick={() => showToast('Forcing directory synchronization and syncing user metadata profiles...')}
+                  className="px-3.5 py-1.5 border border-brand-border rounded-lg bg-white text-[11px] font-bold text-brand-text-dark hover:bg-brand-off-white cursor-pointer"
                 >
                   Sync Active Profiles
                 </button>
@@ -392,7 +392,7 @@ export default function Settings() {
 
                 <div className="mt-5 pt-3.5 border-t border-brand-green-border flex items-center justify-between text-[11px] z-10 relative">
                   <span className="text-brand-text-on-green-muted font-mono">Billing Account: Stark Enterprises Corp.</span>
-                  <a href="#" onClick={(e) => { e.preventDefault(); alert("Redirecting to Stripe corporate gateway..."); }} className="text-brand-primary font-bold hover:underline flex items-center">
+                  <a href="#" onClick={(e) => { e.preventDefault(); showToast('Redirecting to Stripe corporate gateway integrations...', 'info'); }} className="text-brand-primary font-bold hover:underline flex items-center">
                     Invoice history
                     <ChevronRight className="h-3.5 w-3.5 ml-0.5" />
                   </a>
@@ -468,6 +468,14 @@ export default function Settings() {
         </div>
 
       </section>
+
+      {/* Floating Monospaced Toast Notification Portal */}
+      {toast && (
+        <div className="fixed bottom-6 right-6 z-50 bg-brand-text-dark text-white border border-brand-border/60 px-5 py-3.5 rounded-2xl shadow-[0_12px_40px_-6px_rgba(0,0,0,0.15)] flex items-center space-x-3 font-mono text-[10px] animate-fade-in hover:shadow-2xl transition-all duration-300">
+          <span className="h-2 w-2 rounded-full bg-brand-nvidia animate-ping shrink-0" />
+          <p className="font-semibold">{toast.message}</p>
+        </div>
+      )}
 
     </div>
   );
