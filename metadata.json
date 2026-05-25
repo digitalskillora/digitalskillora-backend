@@ -1,0 +1,6 @@
+{
+  "name": "DigitalSkillora",
+  "description": "AI Workforce Training & Adaptive Learning Intelligence Platform dashboard featuring skills mapping, adaptive learning streams, platform health, and enterprise integrations.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
