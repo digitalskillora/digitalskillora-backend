@@ -222,7 +222,7 @@ export default function AdaptiveLearning({ searchQuery = '' }: { searchQuery?: s
               </div>
 
               {/* Toggle switch */}
-              <div className="bg-brand-off-white border border-brand-border rounded-xl p-1 flex space-x-1">
+              <div className="bg-brand-off-white border border-brand-border rounded-xl p-1 flex space-x-1 w-fit mx-auto sm:mx-0 shrink-0">
                 <button
                   onClick={() => setActiveTab('flow')}
                   className={`px-3 py-1.5 text-[10px] font-bold rounded-lg transition-all ${
@@ -375,9 +375,9 @@ export default function AdaptiveLearning({ searchQuery = '' }: { searchQuery?: s
                   </div>
                 </div>
 
-                <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between text-[10px] text-brand-text-muted font-mono bg-white/80 p-2 rounded border border-brand-border">
-                  <span>Legend: Solid line = Done | Dashed = Pending</span>
-                  <span className="text-brand-nvidia font-bold">NVIDIA CUDA Accelerated Nodes</span>
+                <div className="absolute bottom-3 left-4 right-4 flex flex-col sm:flex-row items-center justify-center sm:justify-between text-[9px] sm:text-[10px] text-brand-text-muted font-mono bg-white/90 backdrop-blur-sm p-2 rounded-xl border border-brand-border gap-1 sm:gap-0 text-center sm:text-left shadow-sm">
+                  <span className="whitespace-nowrap">Legend: Solid = Done | Dashed = Pending</span>
+                  <span className="text-brand-nvidia font-bold whitespace-nowrap">NVIDIA CUDA Accelerated Nodes</span>
                 </div>
               </div>
             ) : (

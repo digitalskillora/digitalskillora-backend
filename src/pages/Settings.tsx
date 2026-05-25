@@ -471,7 +471,7 @@ export default function Settings({ searchQuery = '' }: { searchQuery?: string })
 
       {/* Floating Monospaced Toast Notification Portal */}
       {toast && (
-        <div className="fixed bottom-6 right-6 z-50 bg-brand-text-dark text-white border border-brand-border/60 px-5 py-3.5 rounded-2xl shadow-[0_12px_40px_-6px_rgba(0,0,0,0.15)] flex items-center space-x-3 font-mono text-[10px] animate-fade-in hover:shadow-2xl transition-all duration-300">
+        <div className="fixed bottom-6 left-6 right-6 md:left-auto md:right-6 max-w-sm md:max-w-md mx-auto md:mx-0 z-50 bg-brand-text-dark text-white border border-brand-border/60 px-5 py-3.5 rounded-2xl shadow-[0_12px_40px_-6px_rgba(0,0,0,0.15)] flex items-center space-x-3 font-mono text-[10px] animate-fade-in hover:shadow-2xl transition-all duration-300">
           <span className="h-2 w-2 rounded-full bg-brand-nvidia animate-ping shrink-0" />
           <p className="font-semibold">{toast.message}</p>
         </div>

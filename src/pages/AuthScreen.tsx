@@ -96,23 +96,27 @@ export default function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
   };
 
   return (
-    <div id="auth-page-container" className="h-screen w-screen bg-brand-off-white flex flex-col md:flex-row overflow-hidden font-sans select-none relative">
+    <div id="auth-page-container" className="h-screen w-screen bg-brand-green md:bg-brand-off-white flex flex-col md:flex-row overflow-hidden font-sans select-none relative">
 
       {/* Dynamic Gradient Blobs (Backdrop) */}
-      <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-brand-primary/10 blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] rounded-full bg-brand-nvidia/10 blur-[120px] pointer-events-none" />
+      <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-brand-primary/10 blur-[120px] pointer-events-none hidden md:block" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] rounded-full bg-brand-nvidia/10 blur-[120px] pointer-events-none hidden md:block" />
+
+      {/* Mobile-only Premium background glow blobs */}
+      <div className="absolute top-[-10%] left-[-10%] w-[350px] h-[350px] rounded-full bg-brand-primary/25 blur-[90px] pointer-events-none md:hidden animate-pulse" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[350px] h-[350px] rounded-full bg-brand-primary/20 blur-[90px] pointer-events-none md:hidden animate-pulse" style={{ animationDelay: '2s' }} />
 
       {/* Left Pane - Premium Branding Column */}
-      <div className="w-full md:w-5/12 h-screen bg-brand-green p-10 md:p-16 flex flex-col justify-between text-white relative overflow-hidden border-b md:border-b-0 md:border-r border-brand-green-border shrink-0 select-none">
-        
+      <div className="hidden md:flex md:w-5/12 h-screen bg-brand-green p-10 md:p-16 flex-col justify-between text-white relative overflow-hidden border-b md:border-b-0 md:border-r border-brand-green-border shrink-0 select-none">
+
         {/* Subtle decorative high-fidelity glowing gradient orbits */}
         <div className="absolute top-[-20%] left-[-20%] w-[350px] h-[350px] rounded-full bg-brand-primary/25 blur-[100px] animate-pulse pointer-events-none" />
         <div className="absolute bottom-[10%] right-[-10%] w-[300px] h-[300px] rounded-full bg-brand-nvidia/15 blur-[80px] pointer-events-none" />
 
         {/* Subtle decorative dot-grid background overlay */}
-        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-white/10 via-transparent to-transparent bg-grid-pattern" 
-             style={{ backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.15) 1px, transparent 1px)', backgroundSize: '24px 24px' }} />
-        
+        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-white/10 via-transparent to-transparent bg-grid-pattern"
+          style={{ backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.15) 1px, transparent 1px)', backgroundSize: '24px 24px' }} />
+
         {/* Brand Logo */}
         <div className="z-10 flex items-center space-x-2">
           <img src={LogoImg} alt="DigitalSkillora Logo" className="h-14 w-auto object-contain drop-shadow-[0_4px_12px_rgba(0,0,0,0.25)]" />
@@ -123,7 +127,7 @@ export default function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
           <h2 className="text-3xl md:text-[44px] font-black tracking-tight leading-tight uppercase font-mono">
             Elevate Workforce <span className="text-brand-primary drop-shadow-[0_0_30px_rgba(245,166,35,0.9)] select-none inline-block">Competency</span> Models.
           </h2>
-          
+
           <p className="text-xs text-brand-text-on-green leading-relaxed opacity-90">
             Unlock advanced adaptive learning graphs, gap mapping pipelines, MLOps certifications registries, and automated Workday integrations in one unified hub.
           </p>
@@ -137,8 +141,17 @@ export default function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
       </div>
 
       {/* Right Pane - Sleek Auth Form Cards */}
-      <div className="flex-1 h-screen overflow-y-auto flex items-center justify-center p-6 md:p-12 z-10">
-        <div className="w-full max-w-[440px] bg-white border border-brand-border rounded-3xl p-8 md:p-10 shadow-2xl relative overflow-hidden">
+      <div className="flex-1 h-screen overflow-y-auto flex items-start justify-center p-6 md:p-12 pt-28 pb-12 md:items-center md:pt-12 md:pb-12 z-10 bg-brand-green md:bg-transparent relative">
+        
+        {/* Fixed Top Mobile Navbar with Green Background */}
+        <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-brand-green border-b border-brand-green-border flex items-center justify-between px-6 z-30 shadow-md">
+          <img src={LogoImg} alt="DigitalSkillora Logo" className="h-10 w-auto object-contain drop-shadow-[0_2px_8px_rgba(0,0,0,0.15)]" />
+          <span className="text-[10px] font-mono font-bold text-brand-nvidia tracking-wider uppercase bg-brand-nvidia/10 border border-brand-nvidia/20 px-2.5 py-1 rounded-full">
+            Admin Console
+          </span>
+        </div>
+
+        <div className="w-full max-w-[440px] bg-white/95 md:bg-white backdrop-blur-xl border border-white/20 md:border-brand-border rounded-3xl p-8 md:p-10 shadow-2xl relative overflow-hidden">
 
           {/* Form Header */}
           <div className="space-y-2 mb-8 text-center md:text-left">

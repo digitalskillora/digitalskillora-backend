@@ -110,8 +110,8 @@ export default function Overview({ setTab, searchQuery = '' }: { setTab: (tab: a
         <div className="bg-white border border-brand-border rounded-2xl p-6 shadow-sm lg:col-span-5 flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between mb-2">
-              <h3 className="text-sm font-bold text-brand-text-dark uppercase tracking-wider font-mono">Department Readiness Matrix</h3>
-              <span className="px-2 py-0.5 text-[9px] font-mono rounded bg-brand-primary-light text-brand-primary-dark font-bold">DEPT PROFILES</span>
+              <h3 className="text-sm font-bold text-brand-text-dark uppercase tracking-wider font-mono mr-2">Department Readiness Matrix</h3>
+              <span className="px-2 py-0.5 text-[9px] font-mono rounded bg-brand-primary-light text-brand-primary-dark font-bold whitespace-nowrap shrink-0">DEPT PROFILES</span>
             </div>
             <p className="text-xs text-brand-text-body mb-6">Cross-comparison of overall skill density and average path progress by division.</p>
           </div>
@@ -136,7 +136,7 @@ export default function Overview({ setTab, searchQuery = '' }: { setTab: (tab: a
                 </div>
                 <h3 className="text-xs font-mono font-bold uppercase text-brand-text-dark tracking-wider">AI Training Path Recommendations</h3>
               </div>
-              <span className="text-[10px] font-mono text-brand-primary-dark font-bold bg-brand-primary-light px-2 py-0.5 rounded-full animate-pulse">{recommendations.length} Pending Actions</span>
+              <span className="text-[10px] font-mono text-brand-primary-dark font-bold bg-brand-primary-light px-2 py-0.5 rounded-full animate-pulse whitespace-nowrap shrink-0 ml-2">{recommendations.length} Pending Actions</span>
             </div>
 
             {filteredRecommendations.length > 0 ? (
@@ -191,26 +191,26 @@ export default function Overview({ setTab, searchQuery = '' }: { setTab: (tab: a
               <h3 className="text-xs font-mono font-bold uppercase text-brand-text-dark tracking-wider">Recent Learning Activity Monitor</h3>
               <button 
                 onClick={() => setTab('analytics')}
-                className="text-[11px] font-bold text-brand-green-mid hover:text-brand-primary-dark transition-colors flex items-center"
+                className="text-[11px] font-bold text-brand-green-mid hover:text-brand-primary-dark transition-colors flex items-center whitespace-nowrap shrink-0 ml-2"
               >
                 View full leaderboards
-                <ChevronRight className="h-3.5 w-3.5 ml-0.5" />
+                <ChevronRight className="h-3.5 w-3.5 ml-0.5 shrink-0" />
               </button>
             </div>
 
             <div className="divide-y divide-brand-border/60">
               {filteredActivities.length > 0 ? (
                 filteredActivities.map((act) => (
-                <div key={act.id} className="py-3.5 flex items-center justify-between hover:bg-brand-off-white/50 -mx-6 px-6 transition-colors">
-                  <div className="flex items-center space-x-3.5">
+                <div key={act.id} className="py-3.5 flex flex-col sm:flex-row sm:items-center justify-between hover:bg-brand-off-white/50 -mx-6 px-6 transition-colors gap-2 sm:gap-0">
+                  <div className="flex items-start space-x-3.5">
                     {/* Fake avatar */}
-                    <div className="h-9 w-9 bg-brand-green text-brand-primary flex items-center justify-center font-bold text-xs rounded-xl shadow-sm">
+                    <div className="h-9 w-9 bg-brand-green text-brand-primary flex items-center justify-center font-bold text-xs rounded-xl shadow-sm shrink-0">
                       {act.avatar}
                     </div>
                     <div>
-                      <div className="flex items-center space-x-1.5">
+                      <div className="flex items-center space-x-1.5 flex-wrap">
                         <span className="text-xs font-bold text-brand-text-dark">{act.employeeName}</span>
-                        <span className="text-[10px] font-mono bg-brand-off-white text-brand-text-muted px-1.5 py-0.2 rounded">
+                        <span className="text-[10px] font-mono bg-brand-off-white text-brand-text-muted px-1.5 py-0.2 rounded whitespace-nowrap">
                           {act.department}
                         </span>
                       </div>
@@ -221,9 +221,9 @@ export default function Overview({ setTab, searchQuery = '' }: { setTab: (tab: a
                   </div>
 
                   {/* Status Indicator */}
-                  <div className="flex items-center space-x-4">
-                    <span className="text-[10px] text-brand-text-muted font-mono">{act.timestamp}</span>
-                    <span className={`px-2 py-0.5 rounded text-[9px] font-mono font-bold uppercase ${
+                  <div className="flex items-center justify-between sm:justify-end space-x-4 w-full sm:w-auto pl-[50px] sm:pl-0">
+                    <span className="text-[10px] text-brand-text-muted font-mono whitespace-nowrap">{act.timestamp}</span>
+                    <span className={`px-2 py-0.5 rounded text-[9px] font-mono font-bold uppercase whitespace-nowrap ${
                       act.status === 'completed' 
                         ? 'bg-brand-green-light text-brand-green-border' 
                         : act.status === 'ongoing' 

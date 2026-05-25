@@ -92,8 +92,8 @@ export default function Analytics({ searchQuery = '' }: { searchQuery?: string }
         <div className="lg:col-span-8 bg-white border border-brand-border rounded-2xl p-6 shadow-sm flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between mb-2">
-              <h3 className="text-sm font-bold text-brand-text-dark uppercase tracking-wider font-mono">Weekly Learning Velocity Curve</h3>
-              <span className="px-2 py-0.5 text-[9px] font-mono rounded bg-brand-green-light text-brand-green-mid border border-brand-green-border/25 font-bold">RECHARTS ENGINE</span>
+              <h3 className="text-sm font-bold text-brand-text-dark uppercase tracking-wider font-mono mr-2">Weekly Learning Velocity Curve</h3>
+              <span className="px-2 py-0.5 text-[9px] font-mono rounded bg-brand-green-light text-brand-green-mid border border-brand-green-border/25 font-bold whitespace-nowrap shrink-0 ml-2">RECHARTS ENGINE</span>
             </div>
             <p className="text-xs text-brand-text-body mb-6">Comparative trend of average training completion velocities by company divisions.</p>
           </div>
@@ -106,8 +106,8 @@ export default function Analytics({ searchQuery = '' }: { searchQuery?: string }
         <div className="lg:col-span-4 bg-white border border-brand-border rounded-2xl p-6 shadow-sm flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between pb-3 border-b border-brand-border mb-4">
-              <h3 className="text-xs font-mono font-bold uppercase text-brand-text-dark tracking-wider">Training Effectiveness Index</h3>
-              <span className="px-2 py-0.5 text-[9px] font-mono bg-brand-primary-light text-brand-primary-dark rounded font-bold">ANALYSING MODEL</span>
+              <h3 className="text-xs font-mono font-bold uppercase text-brand-text-dark tracking-wider mr-2">Training Effectiveness Index</h3>
+              <span className="px-2 py-0.5 text-[9px] font-mono bg-brand-primary-light text-brand-primary-dark rounded font-bold whitespace-nowrap shrink-0 ml-2">ANALYSING MODEL</span>
             </div>
 
             <p className="text-xs text-brand-text-body leading-relaxed mb-6">

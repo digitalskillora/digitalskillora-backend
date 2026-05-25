@@ -83,12 +83,14 @@ export default function Infrastructure({ searchQuery = '' }: { searchQuery?: str
       <section id="infra-hero" className="bg-brand-green text-brand-white rounded-2xl p-8 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6 border border-brand-green-border">
         <div className="space-y-2 max-w-2xl">
           {/* NVIDIA System indicator label */}
-          <div className="flex items-center space-x-2">
-            <span className="px-3 py-1 text-[10px] font-bold font-mono rounded bg-brand-nvidia text-brand-green shadow uppercase tracking-wider animate-pulse">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 text-[10px] font-mono">
+            <span className="px-3 py-1 font-bold rounded bg-brand-nvidia text-brand-green shadow uppercase tracking-wider animate-pulse whitespace-nowrap shrink-0">
               Powered by NVIDIA AI Stack
             </span>
-            <span className="h-2 w-2 rounded-full bg-brand-nvidia" />
-            <span className="text-[10px] font-mono text-brand-text-on-green-muted uppercase">Hardware: H100 MIG Array</span>
+            <div className="flex items-center space-x-2 shrink-0">
+              <span className="h-2 w-2 rounded-full bg-brand-nvidia hidden sm:inline-block" />
+              <span className="text-brand-text-on-green-muted uppercase whitespace-nowrap">Hardware: H100 MIG Array</span>
+            </div>
           </div>
 
           <h3 className="text-xl font-bold text-white uppercase tracking-tight font-mono">Enterprise AI Supercomputing Command Center</h3>
@@ -299,12 +301,12 @@ export default function Infrastructure({ searchQuery = '' }: { searchQuery?: str
         {/* Right log streams panel: Terminal simulator - xspan-7 */}
         <div className="lg:col-span-8 bg-white border border-brand-border rounded-2xl p-6 shadow-sm flex flex-col justify-between">
           <div>
-            <div className="flex items-center justify-between pb-3 border-b border-brand-border mb-4">
-              <div className="flex items-center space-x-2">
-                <Terminal className="h-4 w-4 text-brand-text-muted" />
-                <h3 className="text-xs font-mono font-bold uppercase text-brand-text-dark tracking-wider">Command Center Active API log stream</h3>
+            <div className="flex items-center justify-between pb-3 border-b border-brand-border mb-4 gap-2">
+              <div className="flex items-center space-x-2 min-w-0">
+                <Terminal className="h-4 w-4 text-brand-text-muted shrink-0" />
+                <h3 className="text-xs font-mono font-bold uppercase text-brand-text-dark tracking-wider truncate" title="Command Center Active API log stream">Command Center Active API log stream</h3>
               </div>
-              <span className="text-[10px] font-mono text-brand-text-muted leading-none">Simulation running...</span>
+              <span className="text-[10px] font-mono text-brand-text-muted leading-none whitespace-nowrap shrink-0 ml-2">Simulation running...</span>
             </div>
 
             {/* Custom styled console grid */}
@@ -325,14 +327,14 @@ export default function Infrastructure({ searchQuery = '' }: { searchQuery?: str
             </div>
           </div>
 
-          <div className="mt-5 pt-3 border-t border-brand-border flex items-center justify-between text-[11px] font-mono text-brand-text-muted">
-            <span>Query source monitoring: REST / GRPC streams</span>
+          <div className="mt-5 pt-3 border-t border-brand-border flex flex-col sm:flex-row items-center justify-center sm:justify-between text-[11px] font-mono text-brand-text-muted gap-2 sm:gap-0 text-center sm:text-left">
+            <span className="whitespace-nowrap">Query source monitoring: REST / GRPC streams</span>
             <button 
               onClick={() => {
                 const manualLog = `[${new Date().toLocaleTimeString()}] MANUAL_TRIGGER: Operational audit logs forced sync.`;
                 setLogs(prev => [manualLog, ...prev]);
               }}
-              className="text-brand-green-mid hover:text-brand-primary-dark font-extrabold"
+              className="text-brand-green-mid hover:text-brand-primary-dark font-extrabold whitespace-nowrap shrink-0 ml-2 cursor-pointer"
             >
               Clear & Poll Logs
             </button>

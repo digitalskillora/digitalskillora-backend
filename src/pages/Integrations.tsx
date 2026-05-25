@@ -120,7 +120,7 @@ export default function Integrations({ searchQuery = '' }: { searchQuery?: strin
         <button 
           onClick={handleGlobalGridSync}
           disabled={syncingId !== null}
-          className="px-4 py-2.5 bg-brand-green text-white hover:bg-brand-green-mid disabled:opacity-55 text-xs font-bold rounded-xl transition-all shadow-sm flex items-center space-x-1.5 cursor-pointer shrink-0"
+          className="w-full md:w-auto px-4 py-2.5 bg-brand-green text-white hover:bg-brand-green-mid disabled:opacity-55 text-xs font-bold rounded-xl transition-all shadow-sm flex items-center justify-center space-x-1.5 cursor-pointer shrink-0"
         >
           <RefreshCcw className={`h-3.5 w-3.5 text-brand-primary ${syncingId === 'all' ? 'animate-spin' : ''}`} />
           <span>{syncingId === 'all' ? 'Syncing Enterprise Grid...' : 'Synchronize Grid'}</span>
@@ -281,12 +281,12 @@ export default function Integrations({ searchQuery = '' }: { searchQuery?: strin
         {/* Sync logs timeline monitor - lg:span-8 */}
         <div className="lg:col-span-8 bg-white border border-brand-border rounded-2xl p-6 shadow-sm flex flex-col justify-between">
           <div>
-            <div className="flex items-center justify-between pb-3 border-b border-brand-border mb-4">
-              <div className="flex items-center space-x-2">
-                <Terminal className="h-4.5 w-4.5 text-brand-text-muted" />
-                <h3 className="text-xs font-mono font-bold uppercase text-brand-text-dark tracking-wider">Connector Handshakes & webhook logs</h3>
+            <div className="flex items-center justify-between pb-3 border-b border-brand-border mb-4 gap-2">
+              <div className="flex items-center space-x-2 min-w-0">
+                <Terminal className="h-4.5 w-4.5 text-brand-text-muted shrink-0" />
+                <h3 className="text-xs font-mono font-bold uppercase text-brand-text-dark tracking-wider truncate" title="Connector Handshakes & webhook logs">Connector Handshakes & webhook logs</h3>
               </div>
-              <span className="text-[10px] font-mono text-brand-text-muted font-semibold">Active monitor...</span>
+              <span className="text-[10px] font-mono text-brand-text-muted font-semibold whitespace-nowrap shrink-0 ml-2">Active monitor...</span>
             </div>
 
             <div className="space-y-3 max-h-[290px] overflow-y-auto pr-1">
@@ -315,14 +315,14 @@ export default function Integrations({ searchQuery = '' }: { searchQuery?: strin
             </div>
           </div>
 
-          <div className="mt-5 pt-3 border-t border-brand-border flex items-center justify-between text-[11px] font-mono text-brand-text-muted">
-            <span>Synchronizer schema version: SFX v4.1</span>
+          <div className="mt-5 pt-3 border-t border-brand-border flex flex-col sm:flex-row items-center justify-center sm:justify-between text-[11px] font-mono text-brand-text-muted gap-2 sm:gap-0 text-center sm:text-left">
+            <span className="whitespace-nowrap">Synchronizer schema version: SFX v4.1</span>
             <button 
               onClick={() => {
                 setLogs(syncLogs);
                 showToast('Cleared active logs buffer. Reloaded default historical feeds.');
               }}
-              className="text-brand-green-mid hover:text-brand-primary-dark font-extrabold cursor-pointer"
+              className="text-brand-green-mid hover:text-brand-primary-dark font-extrabold whitespace-nowrap shrink-0 ml-2 cursor-pointer"
             >
               Refresh Feed logs
             </button>
@@ -333,7 +333,7 @@ export default function Integrations({ searchQuery = '' }: { searchQuery?: strin
 
       {/* Floating Monospaced Toast Notification Portal */}
       {toast && (
-        <div className="fixed bottom-6 right-6 z-50 bg-brand-text-dark text-white border border-brand-border/60 px-5 py-3.5 rounded-2xl shadow-[0_12px_40px_-6px_rgba(0,0,0,0.15)] flex items-center space-x-3 font-mono text-[10px] animate-fade-in hover:shadow-2xl transition-all duration-300">
+        <div className="fixed bottom-6 left-6 right-6 md:left-auto md:right-6 max-w-sm md:max-w-md mx-auto md:mx-0 z-50 bg-brand-text-dark text-white border border-brand-border/60 px-5 py-3.5 rounded-2xl shadow-[0_12px_40px_-6px_rgba(0,0,0,0.15)] flex items-center space-x-3 font-mono text-[10px] animate-fade-in hover:shadow-2xl transition-all duration-300">
           <span className="h-2 w-2 rounded-full bg-brand-nvidia animate-ping shrink-0" />
           <p className="font-semibold">{toast.message}</p>
         </div>

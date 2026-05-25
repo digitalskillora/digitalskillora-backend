@@ -93,7 +93,7 @@ export default function Header({ title, onSearch, onMenuClick, onNavigate, user 
         )}
         <div>
           <h1 id="header-page-title" className="text-base md:text-xl font-bold tracking-tight text-brand-text-dark">{title}</h1>
-          <p className="text-[10px] md:text-[11px] font-mono text-brand-text-muted flex items-center mt-0.5">
+          <p className="hidden md:flex text-[10px] md:text-[11px] font-mono text-brand-text-muted items-center mt-0.5">
             System Time: <span className="font-semibold text-brand-green-mid ml-1">{syncTime || 'Initializing...'}</span>
           </p>
         </div>

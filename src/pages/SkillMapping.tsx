@@ -149,8 +149,8 @@ export default function SkillMapping({ searchQuery = '' }: { searchQuery?: strin
         <div className="lg:col-span-5 bg-white border border-brand-border rounded-2xl p-6 shadow-sm flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between mb-2">
-              <h3 className="text-xs font-mono font-bold uppercase text-brand-text-dark tracking-wider">Overall Competency Projections</h3>
-              <span className="px-2 py-0.5 text-[9px] font-mono rounded bg-brand-primary-light text-brand-primary-dark font-bold">RADAR VISUAL</span>
+              <h3 className="text-xs font-mono font-bold uppercase text-brand-text-dark tracking-wider mr-2">Overall Competency Projections</h3>
+              <span className="px-2 py-0.5 text-[9px] font-mono rounded bg-brand-primary-light text-brand-primary-dark font-bold whitespace-nowrap shrink-0 ml-2">RADAR VISUAL</span>
             </div>
             <p className="text-xs text-brand-text-body mb-6">Proportionate alignment of current workforce skills vs targeted benchmarks.</p>
           </div>
@@ -163,8 +163,8 @@ export default function SkillMapping({ searchQuery = '' }: { searchQuery?: strin
         <div className="lg:col-span-7 bg-white border border-brand-border rounded-2xl p-6 shadow-sm flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between mb-2">
-              <h3 className="text-xs font-mono font-bold uppercase text-brand-text-dark tracking-wider font-mono">Departmental Skill Heatmap Matrix</h3>
-              <span className="px-2 py-0.5 text-[9px] font-mono rounded bg-brand-green-light text-brand-green-border font-bold">GRID HEAT INDICATOR</span>
+              <h3 className="text-xs font-mono font-bold uppercase text-brand-text-dark tracking-wider font-mono mr-2">Departmental Skill Heatmap Matrix</h3>
+              <span className="px-2 py-0.5 text-[9px] font-mono rounded bg-brand-green-light text-brand-green-border font-bold whitespace-nowrap shrink-0 ml-2">GRID HEAT INDICATOR</span>
             </div>
             <p className="text-xs text-brand-text-body mb-6">Darker colors reflect high competency density. Lighter grids indicate focal areas for training.</p>
           </div>
@@ -239,8 +239,8 @@ export default function SkillMapping({ searchQuery = '' }: { searchQuery?: strin
         {/* Real gap list monitor - lg:span-7 */}
         <div className="lg:col-span-7 bg-white border border-brand-border rounded-2xl p-6 shadow-sm">
           <div className="flex items-center justify-between mb-4 pb-2 border-b border-brand-border/60">
-            <h3 className="text-xs font-mono font-bold uppercase text-brand-text-dark tracking-wider">Enterprise Skills Gap Analytics queue</h3>
-            <span className="text-[10px] font-mono text-red-600 bg-red-50 border border-red-150 px-2 py-0.5 rounded-full font-bold">GAP SYSTEM ALERTS</span>
+            <h3 className="text-xs font-mono font-bold uppercase text-brand-text-dark tracking-wider mr-2">Enterprise Skills Gap Analytics queue</h3>
+            <span className="text-[10px] font-mono text-red-600 bg-red-50 border border-red-150 px-2 py-0.5 rounded-full font-bold whitespace-nowrap shrink-0 ml-2">GAP SYSTEM ALERTS</span>
           </div>
 
           <div className="space-y-3.5">
