@@ -15,7 +15,8 @@ import {
   Sparkles,
   ArrowRight,
   ShieldAlert,
-  Loader2
+  Loader2,
+  Check
 } from 'lucide-react';
 import LogoImg from '../assest/Logo.png';
 
@@ -35,6 +36,45 @@ export default function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
   const [googleLoading, setGoogleLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Password Complexity Evaluator
+  const hasLength = password.length >= 8;
+  const hasUpper = /[A-Z]/.test(password);
+  const hasLower = /[a-z]/.test(password);
+  const hasNumber = /[0-9]/.test(password);
+  const hasSymbol = /[^A-Za-z0-9]/.test(password);
+
+  const rules = [
+    { label: 'At least 8 chars', valid: hasLength },
+    { label: 'Uppercase', valid: hasUpper },
+    { label: 'Lowercase', valid: hasLower },
+    { label: 'Number', valid: hasNumber },
+    { label: 'Symbol (e.g. !@#$)', valid: hasSymbol },
+  ];
+
+  const strengthCount = rules.filter(r => r.valid).length;
+
+  let strengthLabel = 'Very Weak';
+  let strengthColorClass = 'text-red-500';
+  let strengthBarColor = 'bg-red-500';
+
+  if (strengthCount === 5) {
+    strengthLabel = 'Excellent';
+    strengthColorClass = 'text-brand-nvidia';
+    strengthBarColor = 'bg-brand-nvidia';
+  } else if (strengthCount >= 4) {
+    strengthLabel = 'Strong';
+    strengthColorClass = 'text-emerald-500';
+    strengthBarColor = 'bg-emerald-500';
+  } else if (strengthCount >= 3) {
+    strengthLabel = 'Moderate';
+    strengthColorClass = 'text-amber-500';
+    strengthBarColor = 'bg-amber-500';
+  } else if (strengthCount >= 2) {
+    strengthLabel = 'Weak';
+    strengthColorClass = 'text-orange-500';
+    strengthBarColor = 'bg-orange-500';
+  }
+
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) {
@@ -44,6 +84,20 @@ export default function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
     if (isSignUp && !name) {
       setError('Please enter your full name.');
       return;
+    }
+
+    if (isSignUp) {
+      const missingRules = [];
+      if (!hasLength) missingRules.push('at least 8 characters');
+      if (!hasUpper) missingRules.push('an uppercase letter');
+      if (!hasLower) missingRules.push('a lowercase letter');
+      if (!hasNumber) missingRules.push('a number');
+      if (!hasSymbol) missingRules.push('a symbol');
+
+      if (missingRules.length > 0) {
+        setError(`Password must include: ${missingRules.join(', ')}.`);
+        return;
+      }
     }
 
     setLoading(true);
@@ -141,7 +195,7 @@ export default function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
       </div>
 
       {/* Right Pane - Sleek Auth Form Cards */}
-      <div className="flex-1 h-screen overflow-y-auto flex items-start justify-center p-6 md:p-12 pt-28 pb-12 md:items-center md:pt-12 md:pb-12 z-10 bg-brand-green md:bg-transparent relative">
+      <div className="flex-1 h-screen overflow-y-auto flex items-start justify-center p-6 md:p-12 pt-28 pb-12 md:py-12 z-10 bg-brand-green md:bg-transparent relative">
         
         {/* Fixed Top Mobile Navbar with Green Background */}
         <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-brand-green border-b border-brand-green-border flex items-center justify-between px-6 z-30 shadow-md">
@@ -151,7 +205,7 @@ export default function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
           </span>
         </div>
 
-        <div className="w-full max-w-[440px] bg-white/95 md:bg-white backdrop-blur-xl border border-white/20 md:border-brand-border rounded-3xl p-8 md:p-10 shadow-2xl relative overflow-hidden">
+        <div className="w-full max-w-[440px] bg-white/95 md:bg-white backdrop-blur-xl border border-white/20 md:border-brand-border rounded-3xl p-8 md:p-10 shadow-2xl relative overflow-hidden md:my-auto">
 
           {/* Form Header */}
           <div className="space-y-2 mb-8 text-center md:text-left">
@@ -242,6 +296,48 @@ export default function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
+
+              {/* Password strength validator meter */}
+              {isSignUp && password.length > 0 && (
+                <div className="mt-2.5 p-3 bg-brand-off-white border border-brand-border rounded-xl space-y-2 transition-all duration-300 animate-fadeIn">
+                  <div className="flex justify-between items-center text-[10px] font-mono font-bold">
+                    <span className="text-brand-text-muted uppercase">Strength:</span>
+                    <span className={`transition-all duration-300 ${strengthColorClass}`}>{strengthLabel}</span>
+                  </div>
+                  
+                  {/* Segmented Strength Bar */}
+                  <div className="flex space-x-1 h-1.5 w-full">
+                    {[1, 2, 3, 4, 5].map((index) => (
+                      <div
+                        key={index}
+                        className={`h-full flex-1 rounded-full transition-all duration-300 ${
+                          index <= strengthCount ? strengthBarColor : 'bg-brand-border'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                  
+                  {/* Validation Requirements Checklist */}
+                  <div className="grid grid-cols-2 gap-x-2 gap-y-1.5 mt-2 pt-2 border-t border-brand-border/60 text-[10px] text-brand-text-muted">
+                    {rules.map((rule) => (
+                      <div key={rule.label} className="flex items-center space-x-1.5">
+                        {rule.valid ? (
+                          <span className="flex items-center justify-center h-3.5 w-3.5 rounded-full bg-emerald-500/10 text-emerald-600 transition-all duration-300 shrink-0">
+                            <Check className="h-2 w-2 stroke-[3.5]" />
+                          </span>
+                        ) : (
+                          <span className="flex items-center justify-center h-3.5 w-3.5 rounded-full bg-brand-text-muted/10 text-brand-text-muted transition-all duration-300 shrink-0">
+                            <span className="h-1 w-1 rounded-full bg-brand-text-muted" />
+                          </span>
+                        )}
+                        <span className={`transition-all duration-300 ${rule.valid ? 'text-brand-text-dark font-medium' : 'text-brand-text-muted'}`}>
+                          {rule.label}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Submit Button */}

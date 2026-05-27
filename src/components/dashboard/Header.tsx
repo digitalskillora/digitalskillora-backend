@@ -9,7 +9,16 @@ import {
   LogOut,
   Sliders,
   CalendarDays,
-  Menu
+  Menu,
+  LayoutDashboard,
+  Cpu,
+  GitBranch,
+  BarChart3,
+  Activity,
+  Link2,
+  BookOpen,
+  Award,
+  Settings as SettingsIcon
 } from 'lucide-react';
 
 import { auth, signOut } from '../../firebase';
@@ -22,10 +31,23 @@ interface HeaderProps {
   user?: any;
 }
 
+const searchSections = [
+  { key: 'overview', label: 'Dashboard Overview', description: 'Main system overview, KPIs, and status panels.', icon: LayoutDashboard, keywords: ['overview', 'dashboard', 'home', 'main', 'kpi'] },
+  { key: 'learning-engine', label: 'Adaptive Learning Engine', description: 'AI training pipelines, GPU health, and neural nodes.', icon: Cpu, keywords: ['adaptive', 'learning', 'engine', 'ai', 'training', 'gpu', 'neural'] },
+  { key: 'skill-mapping', label: 'Workforce Skill Mapping', description: 'Employee competencies, gaps, and roles parsing.', icon: GitBranch, keywords: ['skill', 'mapping', 'competency', 'gap', 'roles', 'employee'] },
+  { key: 'analytics', label: 'Platform Analytics Dashboard', description: 'Data streams, throughput, and CSV reports export.', icon: BarChart3, keywords: ['analytics', 'data', 'stream', 'csv', 'export', 'reports'] },
+  { key: 'infrastructure', label: 'Enterprise Infrastructure Health', description: 'Cluster status, memory usage, and node distribution.', icon: Activity, keywords: ['infrastructure', 'health', 'cluster', 'memory', 'node', 'server'] },
+  { key: 'integrations', label: 'Integrations & Connectors Hub', description: 'Workday, Slack, Cloudflare, and external API sync.', icon: Link2, keywords: ['integrations', 'connectors', 'hub', 'workday', 'slack', 'api', 'sync'] },
+  { key: 'curriculum', label: 'Enterprise Curriculum Registry', description: 'Learning paths, courses, and syllabus management.', icon: BookOpen, keywords: ['curriculum', 'registry', 'course', 'syllabus', 'path'] },
+  { key: 'credentials', label: 'Compliance & Credential Center', description: 'Certificates verification, compliance, and logs output.', icon: Award, keywords: ['credentials', 'compliance', 'certificate', 'verification'] },
+  { key: 'settings', label: 'Control & Organization Settings', description: 'Global parameters, branding colors, and admin console.', icon: SettingsIcon, keywords: ['settings', 'control', 'organization', 'admin', 'profile'] }
+];
+
 export default function Header({ title, onSearch, onMenuClick, onNavigate, user }: HeaderProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [showSearchResults, setShowSearchResults] = useState(false);
   const [notifications, setNotifications] = useState([
     { id: 1, text: "AI training pipeline for Engineering completed with high confidence.", isNew: true, time: "4 mins ago" },
     { id: 2, text: "Critial skill gap alert: Multi-MIG GPU configurations required.", isNew: true, time: "2 hrs ago" },
@@ -34,6 +56,7 @@ export default function Header({ title, onSearch, onMenuClick, onNavigate, user 
 
   const notificationRef = useRef<HTMLDivElement>(null);
   const profileRef = useRef<HTMLDivElement>(null);
+  const searchRef = useRef<HTMLDivElement>(null);
   const [syncTime, setSyncTime] = useState('');
 
   useEffect(() => {
@@ -43,6 +66,9 @@ export default function Header({ title, onSearch, onMenuClick, onNavigate, user 
       }
       if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
         setShowProfileMenu(false);
+      }
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        setShowSearchResults(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -77,6 +103,12 @@ export default function Header({ title, onSearch, onMenuClick, onNavigate, user 
 
   const newCount = notifications.filter(n => n.isNew).length;
 
+  const filteredSections = searchSections.filter(sec => 
+    sec.label.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    sec.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    sec.keywords.some(kw => kw.toLowerCase().includes(searchTerm.toLowerCase()))
+  );
+
   return (
     <header id="main-header" className="min-h-[80px] py-4 md:py-5 border-b border-brand-border bg-white sticky top-0 px-4 md:px-8 z-20 flex items-center justify-between">
       {/* Left side description */}
@@ -102,18 +134,61 @@ export default function Header({ title, onSearch, onMenuClick, onNavigate, user 
       {/* Right side widgets */}
       <div className="flex items-center space-x-6">
         {/* Search bar */}
-        <div className="relative w-80 max-md:hidden">
+        <div className="relative w-80 max-md:hidden" ref={searchRef}>
           <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
             <Search className="h-4 w-4 text-brand-text-muted" />
           </div>
           <input
             id="header-search-input"
             type="text"
-            placeholder="Search employees, skills, paths..."
+            placeholder="Search dashboard sections (e.g. AI, Skills)..."
             value={searchTerm}
-            onChange={handleSearchChange}
+            onChange={(e) => {
+              handleSearchChange(e);
+              setShowSearchResults(true);
+            }}
+            onFocus={() => setShowSearchResults(true)}
             className="w-full bg-brand-off-white border border-brand-border rounded-xl pl-10 pr-4 py-2 text-xs font-medium text-brand-text-dark focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-all duration-200"
           />
+
+          {showSearchResults && searchTerm.trim() !== '' && (
+            <div id="search-results-dropdown" className="absolute left-0 right-0 mt-2 bg-white border border-brand-border shadow-xl rounded-2xl p-2 z-50 max-h-80 overflow-y-auto">
+              <p className="px-3 py-1.5 text-[9px] font-bold tracking-wider text-brand-text-muted uppercase font-mono">Dashboard Sections Found</p>
+              {filteredSections.length > 0 ? (
+                <div className="space-y-0.5">
+                  {filteredSections.map(sec => {
+                    const Icon = sec.icon;
+                    return (
+                      <button
+                        key={sec.key}
+                        onClick={() => {
+                          if (onNavigate) {
+                            onNavigate(sec.key as any);
+                          }
+                          setSearchTerm('');
+                          setShowSearchResults(false);
+                        }}
+                        className="w-full flex items-start space-x-3 p-2.5 hover:bg-brand-off-white rounded-xl transition-all duration-150 text-left cursor-pointer group"
+                      >
+                        <div className="p-1.5 rounded-lg bg-brand-off-white group-hover:bg-white border border-brand-border transition-colors shrink-0">
+                          <Icon className="h-4 w-4 text-brand-primary animate-pulse" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-xs font-bold text-brand-text-dark group-hover:text-brand-primary transition-colors leading-none truncate">{sec.label}</p>
+                          <p className="text-[10px] text-brand-text-muted mt-1 leading-snug truncate">{sec.description}</p>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="py-6 text-center text-brand-text-muted">
+                  <p className="text-xs font-medium">No sections matching "{searchTerm}"</p>
+                  <p className="text-[10px] mt-1 font-mono">Try searching for 'AI', 'Analytics', or 'Settings'.</p>
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Notification bell panel */}
@@ -130,7 +205,7 @@ export default function Header({ title, onSearch, onMenuClick, onNavigate, user 
           </button>
 
           {showNotifications && (
-            <div id="notifications-dropdown" className="absolute right-0 mt-3 w-80 bg-white border border-brand-border shadow-xl rounded-2xl p-4 z-50 text-xs animate-fade-in/10">
+            <div id="notifications-dropdown" className="fixed top-[76px] left-4 right-4 sm:absolute sm:top-auto sm:left-auto sm:right-0 sm:w-80 sm:mt-3 bg-white border border-brand-border shadow-xl rounded-2xl p-4 z-50 text-xs animate-fade-in/10">
               <div className="flex items-center justify-between pb-3 border-b border-brand-border">
                 <span className="font-bold text-sm text-brand-text-dark flex items-center">
                   <Sparkles className="h-4 w-4 text-brand-primary mr-1 animate-spin" />
